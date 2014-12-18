@@ -156,9 +156,22 @@ bool CCMenu::initWithArray(CCArray* pArrayOfItems)
         setCascadeColorEnabled(true);
         setCascadeOpacityEnabled(true);
         
+        //@Plus Pingya
+        userData = NULL;
+        onWillReleased = NULL;
+        onWillReleasedSender = NULL;
+        
         return true;
     }
     return false;
+}
+
+CCMenu::~CCMenu() {
+    
+    if (onWillReleased) {
+        onWillReleased(onWillReleasedSender);
+    }
+
 }
 
 /*

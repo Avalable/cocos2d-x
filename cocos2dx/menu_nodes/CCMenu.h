@@ -59,6 +59,15 @@ class CC_DLL CCMenu : public CCLayerRGBA
     bool m_bEnabled;
     
 public:
+    
+    //@PlusPingya
+    void* userData;
+    
+    /** this callback is called when the class about to release */
+    void (*onWillReleased)(void* sender);
+    void* onWillReleasedSender;
+    
+    
     /**
      *  @js ctor
      */
@@ -67,7 +76,7 @@ public:
      *  @js NA
      *  @lua NA
      */
-    virtual ~CCMenu(){}
+    virtual ~CCMenu();
 
     /** creates an empty CCMenu */
     static CCMenu* create();
@@ -186,6 +195,7 @@ public:
     virtual void setEnabled(bool value) { m_bEnabled = value; };
     
     CCMenuItem *getSelectedItem() { return m_pSelectedItem; }
+    void unselect() { m_pSelectedItem = NULL; }
 
 protected:
     CCMenuItem* itemForTouch(CCTouch * touch);

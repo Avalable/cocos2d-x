@@ -65,6 +65,9 @@ CCMenuItem* CCMenuItem::create(CCObject *rec, SEL_MenuHandler selector)
 
 bool CCMenuItem::initWithTarget(CCObject *rec, SEL_MenuHandler selector)
 {
+    onWillActive = NULL;
+    onWillActiveSender = NULL;
+    
     setAnchorPoint(ccp(0.5f, 0.5f));
     m_pListener = rec;
     m_pfnSelector = selector;
@@ -109,6 +112,11 @@ void CCMenuItem::activate()
 {
     if (m_bEnabled)
     {
+        //@Plus Pingya
+        if (onWillActive) {
+            onWillActive(onWillActiveSender);
+        }
+        
         if (m_pListener && m_pfnSelector)
         {
             (m_pListener->*m_pfnSelector)(this);

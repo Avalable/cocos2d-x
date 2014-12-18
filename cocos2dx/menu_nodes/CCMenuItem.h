@@ -60,6 +60,12 @@ protected:
     bool m_bEnabled;
 
 public:
+    
+    //@PlusPingya
+    /* callback will be called before it is actually active */
+    void (*onWillActive)(void*);
+    void* onWillActiveSender;
+    
     /**
      *  @js ctor
      */
