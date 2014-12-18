@@ -94,6 +94,9 @@ bool CCSpriteBatchNode::initWithTexture(CCTexture2D *tex, unsigned int capacity)
     m_pobDescendants->initWithCapacity(capacity);
 
     setShaderProgram(CCShaderCache::sharedShaderCache()->programForKey(kCCShader_PositionTextureColor));
+    
+    schedule(schedule_selector(CCSpriteBatchNode::checkCoolingOffscreen), 0.05f);
+    
     return true;
 }
 
@@ -121,6 +124,7 @@ CCSpriteBatchNode::CCSpriteBatchNode()
 
 CCSpriteBatchNode::~CCSpriteBatchNode()
 {
+    unschedule(schedule_selector(CCSprite::checkCoolingOffscreen));
     CC_SAFE_RELEASE(m_pobTextureAtlas);
     CC_SAFE_RELEASE(m_pobDescendants);
 }
@@ -404,6 +408,58 @@ void CCSpriteBatchNode::draw(void)
     m_pobTextureAtlas->drawQuads();
 
     CC_PROFILER_STOP("CCSpriteBatchNode - draw");
+}
+
+void CCSpriteBatchNode::checkCoolingOffscreen() {
+    
+    //@PlusPingya - Don't render when offscreen
+    if (preferenceRootParent) {
+        
+        CCSize _screenSize = CCDirector::sharedDirector()->getWinSize();
+        CCRect _dispRect = CCRect(0, 0, _screenSize.width, _screenSize.height);
+        
+        CCPoint _pos = this->getPosition();
+        CCPoint _scl = ccp(this->getScaleX(), this->getScaleY());
+        CCNode *_node = this;
+        int _count=0;
+        
+        while (CCNode *_parent = _node->getParent()) {
+            
+            if (_count==0) {
+                _pos = _parent->convertToWorldSpace(_pos);
+            }
+            
+            _count++;
+            _scl = ccp(fabsf(_scl.x*_parent->getScaleX()), fabsf(_scl.y*_parent->getScaleY()));
+            _node = _parent;
+            
+            if (_parent == preferenceRootParent) {
+                break;
+            }
+            
+        }
+        
+        if (!_dispRect.intersectsRect(CCRect(_pos.x, _pos.y, 1, 1))) {
+            
+            CCSize _siz = CCSize(getContentSize().width*_scl.x, getContentSize().height*_scl.y);
+            CCPoint _ach = getAnchorPoint();
+            
+            CCRect _rect = CCRect(_pos.x-((_siz.width)*_ach.x),
+                                  _pos.y-((_siz.height)*_ach.y),
+                                  _siz.width,
+                                  _siz.height);
+            
+            if (!_rect.intersectsRect(_dispRect)) {
+                m_visible = false;
+                return;
+            }
+            
+        }
+        
+        m_visible = true;
+        
+    }
+    
 }
 
 void CCSpriteBatchNode::increaseAtlasCapacity(void)

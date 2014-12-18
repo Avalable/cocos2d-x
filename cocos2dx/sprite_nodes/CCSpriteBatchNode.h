@@ -62,7 +62,13 @@ class CCSprite;
 */
 class CC_DLL CCSpriteBatchNode : public CCNode, public CCTextureProtocol
 {
+    // @PlusPingya
+    bool m_visible = true;
+    
 public:
+    
+    void *preferenceRootParent = NULL;
+    
     /**
      *  @js ctor
      */
@@ -153,6 +159,8 @@ public:
     virtual void removeAllChildrenWithCleanup(bool cleanup);
     virtual void sortAllChildren();
     virtual void draw(void);
+    // @PlusPingya
+    void checkCoolingOffscreen();
 
 protected:
     /** Inserts a quad at a certain index into the texture atlas. The CCSprite won't be added into the children array.

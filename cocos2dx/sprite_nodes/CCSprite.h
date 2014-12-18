@@ -157,7 +157,10 @@ public:
     
     /// @}  end of creators group
     
-    
+    //@ PlusPingya
+    // User specify preferenceRootParent, when search back to find root parent, it will end here, not matter that are other parents
+    void* preferenceRootParent;
+    void* userObject;
     
     /// @{
     /// @name Initializers
@@ -301,6 +304,8 @@ public:
     virtual void ignoreAnchorPointForPosition(bool value);
     virtual void setVisible(bool bVisible);
     virtual void draw(void);
+    // @PlusPingya
+    void checkCoolingOffscreen();
     /// @}
     
     /// @{
@@ -502,6 +507,9 @@ public:
     
     /// @} End of Sprite properties getter/setters
     
+    //@PlusPingya
+    bool getVisible();
+    
 protected:
     void updateColor(void);
     virtual void setTextureCoords(CCRect rect);
@@ -549,6 +557,9 @@ protected:
     // image is flipped
     bool m_bFlipX;                              /// Whether the sprite is flipped horizaontally or not.
     bool m_bFlipY;                              /// Whether the sprite is flipped vertically or not.
+    
+    // @PlusPingya
+    bool m_visible = true;
 };
 
 
