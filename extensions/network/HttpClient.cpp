@@ -39,7 +39,7 @@ typedef void* THREAD_VOID;
 #include <errno.h>
 #include <queue>
 
-#include "curl.h"
+#include <curl/curl.h>
 
 NS_CC_EXT_BEGIN
 
