@@ -274,6 +274,10 @@
 		1A2802B016DF1C5B00189CBF /* ccUTF8.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A2802AE16DF1C5B00189CBF /* ccUTF8.cpp */; };
 		1A2802B116DF1C5B00189CBF /* ccUTF8.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A2802AF16DF1C5B00189CBF /* ccUTF8.h */; };
 		1A3187F416C0B30600207637 /* CCImageCommonWebp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A3187F316C0B30600207637 /* CCImageCommonWebp.cpp */; };
+		1A31963016C0DDE800207637 /* decode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A3191B616C0DDE700207637 /* decode.h */; };
+		1A31963116C0DDE800207637 /* encode.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A3191B716C0DDE700207637 /* encode.h */; };
+		1A31963216C0DDE800207637 /* types.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A3191B816C0DDE700207637 /* types.h */; };
+		1A3199AE16C0E3A200207637 /* libwebp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A3199AD16C0E3A200207637 /* libwebp.a */; };
 		1A4646DA16DC8FB700DE131F /* ccFPSImages.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4646D816DC8FB700DE131F /* ccFPSImages.h */; };
 		1A4646DC16DC901A00DE131F /* ccFPSImages.c in Sources */ = {isa = PBXBuildFile; fileRef = 1A4646DB16DC901900DE131F /* ccFPSImages.c */; };
 		1A5428FF1720F0650074EC5C /* CCDataVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A5428FD1720F0650074EC5C /* CCDataVisitor.cpp */; };
@@ -312,10 +316,6 @@
 		4EF8999A16E207E70040A527 /* CCTMXXMLParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4EF8998E16E207E70040A527 /* CCTMXXMLParser.cpp */; };
 		4EF8999B16E207E70040A527 /* CCTMXXMLParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EF8998F16E207E70040A527 /* CCTMXXMLParser.h */; };
 		D43F7F8A15C7D8BA00D713FC /* CCTouch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43F7F8915C7D8BA00D713FC /* CCTouch.cpp */; };
-		EE2694FE1A42EC5C002C5DDC /* libwebp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EE2694FD1A42EC5C002C5DDC /* libwebp.a */; };
-		EE2695071A42ED61002C5DDC /* decode.h in Headers */ = {isa = PBXBuildFile; fileRef = EE2695041A42ED61002C5DDC /* decode.h */; };
-		EE2695081A42ED61002C5DDC /* encode.h in Headers */ = {isa = PBXBuildFile; fileRef = EE2695051A42ED61002C5DDC /* encode.h */; };
-		EE2695091A42ED61002C5DDC /* types.h in Headers */ = {isa = PBXBuildFile; fileRef = EE2695061A42ED61002C5DDC /* types.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -589,6 +589,10 @@
 		1A2802AE16DF1C5B00189CBF /* ccUTF8.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ccUTF8.cpp; sourceTree = "<group>"; };
 		1A2802AF16DF1C5B00189CBF /* ccUTF8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ccUTF8.h; sourceTree = "<group>"; };
 		1A3187F316C0B30600207637 /* CCImageCommonWebp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCImageCommonWebp.cpp; sourceTree = "<group>"; };
+		1A3191B616C0DDE700207637 /* decode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = decode.h; sourceTree = "<group>"; };
+		1A3191B716C0DDE700207637 /* encode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = encode.h; sourceTree = "<group>"; };
+		1A3191B816C0DDE700207637 /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
+		1A3199AD16C0E3A200207637 /* libwebp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwebp.a; path = ../platform/third_party/ios/libraries/libwebp.a; sourceTree = "<group>"; };
 		1A4646D816DC8FB700DE131F /* ccFPSImages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ccFPSImages.h; sourceTree = "<group>"; };
 		1A4646DB16DC901900DE131F /* ccFPSImages.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ccFPSImages.c; sourceTree = "<group>"; };
 		1A5428FD1720F0650074EC5C /* CCDataVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCDataVisitor.cpp; sourceTree = "<group>"; };
@@ -627,10 +631,6 @@
 		4EF8998E16E207E70040A527 /* CCTMXXMLParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCTMXXMLParser.cpp; sourceTree = "<group>"; };
 		4EF8998F16E207E70040A527 /* CCTMXXMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTMXXMLParser.h; sourceTree = "<group>"; };
 		D43F7F8915C7D8BA00D713FC /* CCTouch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCTouch.cpp; sourceTree = "<group>"; };
-		EE2694FD1A42EC5C002C5DDC /* libwebp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwebp.a; path = ../platform/third_party/ios/libraries/libwebp.a; sourceTree = "<group>"; };
-		EE2695041A42ED61002C5DDC /* decode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = decode.h; path = third_party/ios/webp/decode.h; sourceTree = "<group>"; };
-		EE2695051A42ED61002C5DDC /* encode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = encode.h; path = third_party/ios/webp/encode.h; sourceTree = "<group>"; };
-		EE2695061A42ED61002C5DDC /* types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = types.h; path = third_party/ios/webp/types.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -639,7 +639,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1551A343158F2AB200E66CFE /* Foundation.framework in Frameworks */,
-				EE2694FE1A42EC5C002C5DDC /* libwebp.a in Frameworks */,
+				1A3199AE16C0E3A200207637 /* libwebp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -667,7 +667,7 @@
 		1551A341158F2AB200E66CFE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				EE2694FD1A42EC5C002C5DDC /* libwebp.a */,
+				1A3199AD16C0E3A200207637 /* libwebp.a */,
 				1551A342158F2AB200E66CFE /* Foundation.framework */,
 			);
 			name = Frameworks;
@@ -995,7 +995,7 @@
 				1551A47B158F2ADE00E66CFE /* ios */,
 				1551A4A4158F2ADE00E66CFE /* platform.cpp */,
 				1551A4A5158F2ADE00E66CFE /* platform.h */,
-				EE26950A1A42ED8A002C5DDC /* third_party */,
+				1A31912016C0DDE700207637 /* third_party */,
 			);
 			path = platform;
 			sourceTree = "<group>";
@@ -1236,6 +1236,32 @@
 			path = draw_nodes;
 			sourceTree = "<group>";
 		};
+		1A31912016C0DDE700207637 /* third_party */ = {
+			isa = PBXGroup;
+			children = (
+				1A3191A716C0DDE700207637 /* ios */,
+			);
+			path = third_party;
+			sourceTree = "<group>";
+		};
+		1A3191A716C0DDE700207637 /* ios */ = {
+			isa = PBXGroup;
+			children = (
+				1A3191B516C0DDE700207637 /* webp */,
+			);
+			path = ios;
+			sourceTree = "<group>";
+		};
+		1A3191B516C0DDE700207637 /* webp */ = {
+			isa = PBXGroup;
+			children = (
+				1A3191B616C0DDE700207637 /* decode.h */,
+				1A3191B716C0DDE700207637 /* encode.h */,
+				1A3191B816C0DDE700207637 /* types.h */,
+			);
+			path = webp;
+			sourceTree = "<group>";
+		};
 		37EEEBF3175DDF3A003C1193 /* component */ = {
 			isa = PBXGroup;
 			children = (
@@ -1267,32 +1293,6 @@
 			path = user_default;
 			sourceTree = "<group>";
 		};
-		EE26950A1A42ED8A002C5DDC /* third_party */ = {
-			isa = PBXGroup;
-			children = (
-				EE26950B1A42ED92002C5DDC /* ios */,
-			);
-			name = third_party;
-			sourceTree = "<group>";
-		};
-		EE26950B1A42ED92002C5DDC /* ios */ = {
-			isa = PBXGroup;
-			children = (
-				EE26950C1A42ED9D002C5DDC /* webp */,
-			);
-			name = ios;
-			sourceTree = "<group>";
-		};
-		EE26950C1A42ED9D002C5DDC /* webp */ = {
-			isa = PBXGroup;
-			children = (
-				EE2695041A42ED61002C5DDC /* decode.h */,
-				EE2695051A42ED61002C5DDC /* encode.h */,
-				EE2695061A42ED61002C5DDC /* types.h */,
-			);
-			name = webp;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1300,9 +1300,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE2695071A42ED61002C5DDC /* decode.h in Headers */,
-				EE2695081A42ED61002C5DDC /* encode.h in Headers */,
-				EE2695091A42ED61002C5DDC /* types.h in Headers */,
 				1551A629158F2ADE00E66CFE /* CCAction.h in Headers */,
 				1551A62B158F2ADE00E66CFE /* CCActionCamera.h in Headers */,
 				1551A62D158F2ADE00E66CFE /* CCActionCatmullRom.h in Headers */,
@@ -1455,6 +1452,9 @@
 				15FBEE6B164BBB20008CB2C3 /* CCDrawNode.h in Headers */,
 				1AC6CE8116B9075B00330EFD /* CCFileUtilsIOS.h in Headers */,
 				1AC6CE8916B910CD00330EFD /* CCFileUtils.h in Headers */,
+				1A31963016C0DDE800207637 /* decode.h in Headers */,
+				1A31963116C0DDE800207637 /* encode.h in Headers */,
+				1A31963216C0DDE800207637 /* types.h in Headers */,
 				469A7DF416C24787006FFCB2 /* tinyxml2.h in Headers */,
 				1AA6226216CF6BDF0028C05E /* CCDevice.h in Headers */,
 				1A4646DA16DC8FB700DE131F /* ccFPSImages.h in Headers */,
@@ -1742,8 +1742,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../../../cocos2dx/platform/third_party/ios/libraries\"",
-					"\"$(SRCROOT)/../../../external/\"",
+					"\"$(SRCROOT)/../platform/third_party/ios/libraries\"",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1771,8 +1770,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../../../cocos2dx/platform/third_party/ios/libraries\"",
-					"\"$(SRCROOT)/../../../external/\"",
+					"\"$(SRCROOT)/../platform/third_party/ios/libraries\"",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
