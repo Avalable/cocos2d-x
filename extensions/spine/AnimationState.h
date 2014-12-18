@@ -27,7 +27,6 @@
 #define SPINE_ANIMATIONSTATE_H_
 
 #include <spine/AnimationStateData.h>
-#include "ExtensionMacros.h"
 
 namespace cocos2d { namespace extension {
 
@@ -40,27 +39,28 @@ typedef struct {
 
 /* @param data May be 0 for no mixing. */
 AnimationState* AnimationState_create (AnimationStateData* data);
-CC_EX_DLL void AnimationState_dispose (AnimationState* self);
+void AnimationState_dispose (AnimationState* self);
 
-CC_EX_DLL void AnimationState_update (AnimationState* self, float delta);
+void AnimationState_update (AnimationState* self, float delta);
 
-CC_EX_DLL void AnimationState_apply (AnimationState* self, struct Skeleton* skeleton);
+void AnimationState_apply (AnimationState* self, struct Skeleton* skeleton);
 
 /* @param animationName May be 0. */
-CC_EX_DLL void AnimationState_setAnimationByName (AnimationState* self, const char* animationName, int/*bool*/loop);
+//void AnimationState_setAnimationByName (AnimationState* self, const char* animationName, int/*bool*/loop);
+bool AnimationState_setAnimationByName (AnimationState* self, const char* animationName, int/*bool*/loop);
 /* @param animation May be 0. */
-CC_EX_DLL void AnimationState_setAnimation (AnimationState* self, Animation* animation, int/*bool*/loop);
+void AnimationState_setAnimation (AnimationState* self, Animation* animation, int/*bool*/loop);
 
 /** @param animationName May be 0.
  * @param delay May be <= 0 to use duration of previous animation minus any mix duration plus the negative delay. */
-CC_EX_DLL void AnimationState_addAnimationByName (AnimationState* self, const char* animationName, int/*bool*/loop, float delay);
+void AnimationState_addAnimationByName (AnimationState* self, const char* animationName, int/*bool*/loop, float delay);
 /** @param animation May be 0.
  * @param delay May be <= 0 to use duration of previous animation minus any mix duration plus the negative delay. */
-CC_EX_DLL void AnimationState_addAnimation (AnimationState* self, Animation* animation, int/*bool*/loop, float delay);
+void AnimationState_addAnimation (AnimationState* self, Animation* animation, int/*bool*/loop, float delay);
 
-CC_EX_DLL void AnimationState_clearAnimation (AnimationState* self);
+void AnimationState_clearAnimation (AnimationState* self);
 
-CC_EX_DLL int/*bool*/AnimationState_isComplete (AnimationState* self);
+int/*bool*/AnimationState_isComplete (AnimationState* self);
 
 }} // namespace cocos2d { namespace extension {
 

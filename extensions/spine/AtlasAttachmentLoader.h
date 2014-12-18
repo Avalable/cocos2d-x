@@ -36,7 +36,7 @@ typedef struct {
 	Atlas* atlas;
 } AtlasAttachmentLoader;
 
-CC_EX_DLL AtlasAttachmentLoader* AtlasAttachmentLoader_create (Atlas* atlas);
+AtlasAttachmentLoader* AtlasAttachmentLoader_create (Atlas* atlas);
 
 }} // namespace cocos2d { namespace extension {
 

@@ -25,10 +25,8 @@
 
 #include <spine/CCSkeleton.h>
 #include <spine/spine-cocos2dx.h>
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 && _MSC_VER >= 1800) // Visual Studio 2013
-#include <algorithm>
-#endif
 
+using namespace std;
 USING_NS_CC;
 using std::min;
 using std::max;
@@ -65,6 +63,7 @@ void CCSkeleton::initialize () {
 
 	setShaderProgram(CCShaderCache::sharedShaderCache()->programForKey(kCCShader_PositionTextureColor));
 	scheduleUpdate();
+    schedule(schedule_selector(CCSkeleton::checkCoolingOffscreen), 0.05f);
 }
 
 void CCSkeleton::setSkeletonData (SkeletonData *skeletonData, bool ownsSkeletonData) {
@@ -111,6 +110,7 @@ CCSkeleton::CCSkeleton (const char* skeletonDataFile, const char* atlasFile, flo
 }
 
 CCSkeleton::~CCSkeleton () {
+    unschedule(schedule_selector(CCSprite::checkCoolingOffscreen));
 	if (ownsSkeletonData) SkeletonData_dispose(skeleton->data);
 	if (atlas) Atlas_dispose(atlas);
 	Skeleton_dispose(skeleton);
@@ -121,6 +121,11 @@ void CCSkeleton::update (float deltaTime) {
 }
 
 void CCSkeleton::draw () {
+
+    if (!m_visible) {
+        return;
+    }
+    
 	CC_NODE_DRAW_SETUP();
 
 	ccGLBlendFunc(blendFunc.src, blendFunc.dst);
@@ -143,6 +148,23 @@ void CCSkeleton::draw () {
 	quad.br.vertices.z = 0;
 	for (int i = 0, n = skeleton->slotCount; i < n; i++) {
 		Slot* slot = skeleton->slots[i];
+
+        //@PlusPingya - Hide bones that are not specified, and only if any were specified
+        if (renderSpecificBones.size() > 0) {
+            bool _found = false;
+            for (vector<string>::iterator it=renderSpecificBones.begin(); it!=renderSpecificBones.end(); ++it) {
+                string _bone_name = (string)(*it);
+                if (slot->bone) {
+                    if (strcmp(slot->bone->data->name, _bone_name.c_str())==0) {
+                        _found = true;
+                    }
+                }
+            }
+            if (!_found) {
+                continue;
+            }
+        }
+        
 		if (!slot->attachment || slot->attachment->type != ATTACHMENT_REGION) continue;
 		RegionAttachment* attachment = (RegionAttachment*)slot->attachment;
 		CCTextureAtlas* regionTextureAtlas = getTextureAtlas(attachment);
@@ -236,6 +258,55 @@ CCRect CCSkeleton::boundingBox () {
 	CCPoint position = getPosition();
 	return CCRectMake(position.x + minX, position.y + minY, maxX - minX, maxY - minY);
 }
+    
+//@PlusPingya
+void CCSkeleton::checkCoolingOffscreen() {
+    
+    //@PlusPingya - Don't render when offscreen
+    if (preferenceRootParent) {
+        
+        CCSize _screenSize = CCDirector::sharedDirector()->getWinSize();
+        CCRect _dispRect = CCRect(0.0f, 0.0f, _screenSize.width, _screenSize.height);
+        
+        CCPoint _pos = this->getPosition();
+        CCPoint _scl = ccp(this->getScaleX(), this->getScaleY());
+        CCNode *_node = this;
+        int _count=0;
+        
+        while (CCNode *_parent = _node->getParent()) {
+            if (_count==0) {
+                _pos = _parent->convertToWorldSpace(_pos);
+            }
+            _count++;
+            _scl = ccp(fabsf(_scl.x*_parent->getScaleX()), fabsf(_scl.y*_parent->getScaleY()));
+            _node = _parent;
+            if (_parent == preferenceRootParent) {
+                break;
+            }
+        }
+        
+        if (!_dispRect.intersectsRect(CCRect(_pos.x, _pos.y, 1, 1))) {
+        
+            CCSize _siz = CCSize(getContentSize().width*_scl.x, getContentSize().height*_scl.y)*1.5f;
+            CCPoint _ach = getAnchorPoint()+ccp(0.5f, 0.5f);
+            
+            CCRect _rect = CCRect(_pos.x-((_siz.width)*_ach.x),
+                                  _pos.y-((_siz.height)*_ach.y),
+                                  _siz.width,
+                                  _siz.height);
+
+            if (!_rect.intersectsRect(_dispRect)) {
+                m_visible = false;
+                return;
+            }
+            
+        }
+        
+        m_visible = true;
+        
+    }
+    
+}
 
 // --- Convenience methods for Skeleton_* functions.
 
@@ -251,6 +322,29 @@ void CCSkeleton::setBonesToSetupPose () {
 }
 void CCSkeleton::setSlotsToSetupPose () {
 	Skeleton_setSlotsToSetupPose(skeleton);
+}
+    
+//@PlusPingya - Added function to find and list all childs bones of the specificed bone
+bool CCSkeleton::findAndSetSpecifiedBoneChilds(BoneData* bone_data_, const char *bone_name_) {
+    if (bone_data_) {
+        if (strcmp(bone_data_->name, bone_name_) == 0) { //match
+            return true;
+        }else {
+            if (findAndSetSpecifiedBoneChilds(bone_data_->parent, bone_name_)) {
+                renderSpecificBones.push_back(bone_data_->name);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+void CCSkeleton::setSpecifiedBoneToRender(const char *bone_name_) {
+    renderSpecificBones.clear();
+    renderSpecificBones.push_back(bone_name_);
+    for (int i = 0, n = skeleton->slotCount; i < n; i++) {
+		Slot* slot = skeleton->slots[i];
+        findAndSetSpecifiedBoneChilds(slot->bone->data, bone_name_);
+    }
 }
 
 Bone* CCSkeleton::findBone (const char* boneName) const {

@@ -35,7 +35,7 @@ namespace cocos2d { namespace extension {
 /**
 Draws an animated skeleton, providing a simple API for applying one or more animations and queuing animations to be played later.
 */
-class CC_EX_DLL CCSkeletonAnimation: public CCSkeleton {
+class CCSkeletonAnimation: public CCSkeleton {
 public:
 	std::vector<AnimationState*> states;
 
@@ -54,12 +54,12 @@ public:
 	void addAnimationState (AnimationStateData* stateData = 0);
 	void setAnimationStateData (AnimationStateData* stateData, int stateIndex = 0);
 	void setMix (const char* fromAnimation, const char* toAnimation, float duration, int stateIndex = 0);
-	void setAnimation (const char* name, bool loop, int stateIndex = 0);
+    bool setAnimation (const char* name, bool loop, int stateIndex = 0);
 	void addAnimation (const char* name, bool loop, float delay = 0, int stateIndex = 0);
 	void clearAnimation (int stateIndex = 0);
     
     cocos2d::CCPoint getBonePosition(const char* bone_name);
-
+    
 protected:
 	CCSkeletonAnimation ();
 

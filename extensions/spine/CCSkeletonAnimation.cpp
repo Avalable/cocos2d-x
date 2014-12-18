@@ -26,9 +26,6 @@
 #include <spine/CCSkeletonAnimation.h>
 #include <spine/extension.h>
 #include <spine/spine-cocos2dx.h>
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 && _MSC_VER >= 1800) // Visual Studio 2013
-#include <algorithm>
-#endif
 
 USING_NS_CC;
 using std::min;
@@ -127,9 +124,12 @@ void CCSkeletonAnimation::setMix (const char* fromAnimation, const char* toAnima
 	AnimationStateData_setMixByName(states[stateIndex]->data, fromAnimation, toAnimation, duration);
 }
 
-void CCSkeletonAnimation::setAnimation (const char* name, bool loop, int stateIndex) {
-	CCAssert(stateIndex >= 0 && stateIndex < (int)states.size(), "stateIndex out of range.");
-	AnimationState_setAnimationByName(states[stateIndex], name, loop);
+bool CCSkeletonAnimation::setAnimation (const char* name, bool loop, int stateIndex) {
+    CCAssert(stateIndex >= 0 && stateIndex < (int)states.size(), "stateIndex out of range.");
+    if(AnimationState_setAnimationByName(states[stateIndex], name, loop)){
+        return true;
+    }
+    return false;
 }
 
 void CCSkeletonAnimation::addAnimation (const char* name, bool loop, float delay, int stateIndex) {
@@ -143,10 +143,12 @@ void CCSkeletonAnimation::clearAnimation (int stateIndex) {
 }
     
 cocos2d::CCPoint CCSkeletonAnimation::getBonePosition(const char* bone_name) {
+
     if (Bone* bone = findBone(bone_name)) {
         return ccp(bone->x, bone->y);
     }
     return CCPointZero;
+    
 }
 
 }} // namespace cocos2d { namespace extension {

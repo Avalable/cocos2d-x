@@ -26,8 +26,6 @@
 #ifndef SPINE_ATTACHMENT_H_
 #define SPINE_ATTACHMENT_H_
 
-#include "ExtensionExport.h"
-
 namespace cocos2d { namespace extension {
 
 struct Slot;
@@ -44,7 +42,7 @@ struct Attachment {
 	const void* const vtable;
 };
 
-CC_EX_DLL void Attachment_dispose (Attachment* self);
+void Attachment_dispose (Attachment* self);
 
 }} // namespace cocos2d { namespace extension {
 

@@ -92,8 +92,11 @@ static void readCurve (CurveTimeline* timeline, int frameIndex, Json* frame) {
 	if (curve->type == Json_String && strcmp(curve->valuestring, "stepped") == 0)
 		CurveTimeline_setStepped(timeline, frameIndex);
 	else if (curve->type == Json_Array) {
-		CurveTimeline_setCurve(timeline, frameIndex, Json_getItemAt(curve, 0)->valuefloat, Json_getItemAt(curve, 1)->valuefloat,
-				Json_getItemAt(curve, 2)->valuefloat, Json_getItemAt(curve, 3)->valuefloat);
+        Json* child0 = curve->child;
+        Json* child1 = child0->next;
+        Json* child2 = child1->next;
+        Json* child3 = child2->next;
+		CurveTimeline_setCurve(timeline, frameIndex, child0->valuefloat, child1->valuefloat, child2->valuefloat, child3->valuefloat);
 	}
 }
 
@@ -107,19 +110,20 @@ static Animation* _SkeletonJson_readAnimation (SkeletonJson* self, Json* root, S
 	int slotCount = slots ? Json_getSize(slots) : 0;
 
 	int timelineCount = 0;
-	int i, ii, iii;
-	for (i = 0; i < boneCount; ++i)
-		timelineCount += Json_getSize(Json_getItemAt(bones, i));
-	for (i = 0; i < slotCount; ++i)
-		timelineCount += Json_getSize(Json_getItemAt(slots, i));
+	int i(0), ii(0), iii(0);
+    Json *boneMap(NULL), *slotMap(NULL);
+
+    for (boneMap = bones ? bones->child : 0; boneMap; boneMap = boneMap->next)
+        timelineCount += boneMap->size;
+    for (slotMap = slots ? slots->child : 0; slotMap; slotMap = slotMap->next)
+        timelineCount += slotMap->size;
+
 	animation = Animation_create(root->name, timelineCount);
 	animation->timelineCount = 0;
 	skeletonData->animations[skeletonData->animationCount] = animation;
 	skeletonData->animationCount++;
 
-	for (i = 0; i < boneCount; ++i) {
-		int timelineCount;
-		Json* boneMap = Json_getItemAt(bones, i);
+    for (boneMap = bones ? bones->child : 0, i=0; boneMap; boneMap = boneMap->next, i++) {
 
 		const char* boneName = boneMap->name;
 
@@ -130,10 +134,9 @@ static Animation* _SkeletonJson_readAnimation (SkeletonJson* self, Json* root, S
 			return 0;
 		}
 
-		timelineCount = Json_getSize(boneMap);
-		for (ii = 0; ii < timelineCount; ++ii) {
+        Json* timelineArray(NULL);
+        for (timelineArray = boneMap->child, ii=0; timelineArray; timelineArray = timelineArray->next, ii++) {
 			float duration;
-			Json* timelineArray = Json_getItemAt(boneMap, ii);
 			int frameCount = Json_getSize(timelineArray);
 			const char* timelineType = timelineArray->name;
 
@@ -141,8 +144,10 @@ static Animation* _SkeletonJson_readAnimation (SkeletonJson* self, Json* root, S
 				
 				RotateTimeline *timeline = RotateTimeline_create(frameCount);
 				timeline->boneIndex = boneIndex;
-				for (iii = 0; iii < frameCount; ++iii) {
-					Json* frame = Json_getItemAt(timelineArray, iii);
+
+                Json* frame(NULL);
+                for (frame = timelineArray->child, iii = 0; frame; frame = frame->next, iii++) {
+
 					RotateTimeline_setFrame(timeline, iii, Json_getFloat(frame, "time", 0), Json_getFloat(frame, "angle", 0));
 					readCurve(SUPER(timeline), iii, frame);
 				}
@@ -156,8 +161,10 @@ static Animation* _SkeletonJson_readAnimation (SkeletonJson* self, Json* root, S
 					float scale = isScale ? 1 : self->scale;
 					TranslateTimeline *timeline = isScale ? ScaleTimeline_create(frameCount) : TranslateTimeline_create(frameCount);
 					timeline->boneIndex = boneIndex;
-					for (iii = 0; iii < frameCount; ++iii) {
-						Json* frame = Json_getItemAt(timelineArray, iii);
+
+                    Json* frame (NULL);
+                    for (frame = timelineArray->child, iii = 0; frame; frame = frame->next, iii++) {
+
 						TranslateTimeline_setFrame(timeline, iii, Json_getFloat(frame, "time", 0), Json_getFloat(frame, "x", 0) * scale,
 								Json_getFloat(frame, "y", 0) * scale);
 						readCurve(SUPER(timeline), iii, frame);
@@ -174,9 +181,8 @@ static Animation* _SkeletonJson_readAnimation (SkeletonJson* self, Json* root, S
 		}
 	}
 
-	for (i = 0; i < slotCount; ++i) {
-		int timelineCount;
-		Json* slotMap = Json_getItemAt(slots, i);
+    for (slotMap = slots ? slots->child : 0, i=0; slotMap; slotMap = slotMap->next, i++) {
+
 		const char* slotName = slotMap->name;
 
 		int slotIndex = SkeletonData_findSlotIndex(skeletonData, slotName);
@@ -186,18 +192,20 @@ static Animation* _SkeletonJson_readAnimation (SkeletonJson* self, Json* root, S
 			return 0;
 		}
 
-		timelineCount = Json_getSize(slotMap);
-		for (ii = 0; ii < timelineCount; ++ii) {
+        Json* timelineArray(NULL);
+        for (timelineArray = slotMap->child, ii=0; timelineArray; timelineArray = timelineArray->next, ii++) {
 			float duration;
-			Json* timelineArray = Json_getItemAt(slotMap, ii);
+
 			int frameCount = Json_getSize(timelineArray);
 			const char* timelineType = timelineArray->name;
 
 			if (strcmp(timelineType, "color") == 0) {
 				ColorTimeline *timeline = ColorTimeline_create(frameCount);
 				timeline->slotIndex = slotIndex;
-				for (iii = 0; iii < frameCount; ++iii) {
-					Json* frame = Json_getItemAt(timelineArray, iii);
+
+                Json* frame(NULL);
+                for (frame = timelineArray->child, iii = 0; frame; frame = frame->next, iii++) {
+
 					const char* s = Json_getString(frame, "color", 0);
 					ColorTimeline_setFrame(timeline, iii, Json_getFloat(frame, "time", 0), toColor(s, 0), toColor(s, 1), toColor(s, 2),
 							toColor(s, 3));
@@ -208,10 +216,13 @@ static Animation* _SkeletonJson_readAnimation (SkeletonJson* self, Json* root, S
 				if (duration > animation->duration) animation->duration = duration;
 
 			} else if (strcmp(timelineType, "attachment") == 0) {
+
 				AttachmentTimeline *timeline = AttachmentTimeline_create(frameCount);
 				timeline->slotIndex = slotIndex;
-				for (iii = 0; iii < frameCount; ++iii) {
-					Json* frame = Json_getItemAt(timelineArray, iii);
+
+                Json* frame(NULL);
+                for (frame = timelineArray->child, iii = 0; frame; frame = frame->next, iii++) {
+
 					Json* name = Json_getItem(frame, "name");
 					AttachmentTimeline_setFrame(timeline, iii, Json_getFloat(frame, "time", 0),
 							name->type == Json_NULL ? 0 : name->valuestring);
@@ -247,15 +258,16 @@ SkeletonData* SkeletonJson_readSkeletonDataFile (SkeletonJson* self, const char*
 SkeletonData* SkeletonJson_readSkeletonData (SkeletonJson* self, const char* json) {
 	SkeletonData* skeletonData;
 	Json *root, *bones;
-	int i, ii, iii, boneCount;
-	Json* slots;
-	Json* skinsMap;
-	Json* animations;
+	int i(0), ii(0), iii(0), boneCount(0);
+	Json* slots(NULL);
+	Json* skinsMap(NULL);
+	Json* animations(NULL);
 
 	FREE(self->error);
 	CONST_CAST(char*, self->error) = 0;
 
-	root = Json_create(json);
+    JsonAllocator allocator;
+	root = Json_create(json, allocator);
 	if (!root) {
 		_SkeletonJson_setError(self, 0, "Invalid skeleton JSON: ", Json_getError());
 		return 0;
@@ -266,8 +278,9 @@ SkeletonData* SkeletonJson_readSkeletonData (SkeletonJson* self, const char* jso
 	bones = Json_getItem(root, "bones");
 	boneCount = Json_getSize(bones);
 	skeletonData->bones = MALLOC(BoneData*, boneCount);
-	for (i = 0; i < boneCount; ++i) {
-		Json* boneMap = Json_getItemAt(bones, i);
+    Json* boneMap(NULL);
+    for (boneMap = bones->child; boneMap; boneMap = boneMap->next, i++)
+    {
 		BoneData* boneData;
 
 		const char* boneName = Json_getString(boneMap, "name", 0);
@@ -299,11 +312,14 @@ SkeletonData* SkeletonJson_readSkeletonData (SkeletonJson* self, const char* jso
 	if (slots) {
 		int slotCount = Json_getSize(slots);
 		skeletonData->slots = MALLOC(SlotData*, slotCount);
-		for (i = 0; i < slotCount; ++i) {
+
+        Json* slotMap(NULL);
+        for (slotMap = slots->child, i=0; slotMap; slotMap = slotMap->next, i++)
+        {
 			SlotData* slotData;
 			const char* color;
 			Json *attachmentItem;
-			Json* slotMap = Json_getItemAt(slots, i);
+
 
 			const char* slotName = Json_getString(slotMap, "name", 0);
 
@@ -337,26 +353,28 @@ SkeletonData* SkeletonJson_readSkeletonData (SkeletonJson* self, const char* jso
 	if (skinsMap) {
 		int skinCount = Json_getSize(skinsMap);
 		skeletonData->skins = MALLOC(Skin*, skinCount);
-		for (i = 0; i < skinCount; ++i) {
-			Json* slotMap = Json_getItemAt(skinsMap, i);
+
+        Json* slotMap(NULL);
+        for (slotMap = skinsMap->child, i=0; slotMap; slotMap = slotMap->next, i++) {
+
 			const char* skinName = slotMap->name;
 			Skin *skin = Skin_create(skinName);
-			int slotNameCount;
 
 			skeletonData->skins[i] = skin;
 			skeletonData->skinCount++;
 			if (strcmp(skinName, "default") == 0) skeletonData->defaultSkin = skin;
 
-			slotNameCount = Json_getSize(slotMap);
-			for (ii = 0; ii < slotNameCount; ++ii) {
-				Json* attachmentsMap = Json_getItemAt(slotMap, ii);
+            Json* attachmentsMap(NULL);
+            for (attachmentsMap = slotMap->child, ii=0; attachmentsMap; attachmentsMap = attachmentsMap->next, ii++) {
+
 				const char* slotName = attachmentsMap->name;
 				int slotIndex = SkeletonData_findSlotIndex(skeletonData, slotName);
 
-				int attachmentCount = Json_getSize(attachmentsMap);
-				for (iii = 0; iii < attachmentCount; ++iii) {
+                iii = 0;
+                Json* attachmentMap(NULL);
+                for (attachmentMap = attachmentsMap->child, iii=0; attachmentMap; attachmentMap = attachmentMap->next, iii++) {
+
 					Attachment* attachment;
-					Json* attachmentMap = Json_getItemAt(attachmentsMap, iii);
 					const char* skinAttachmentName = attachmentMap->name;
 					const char* attachmentName = Json_getString(attachmentMap, "name", skinAttachmentName);
 
@@ -404,8 +422,9 @@ SkeletonData* SkeletonJson_readSkeletonData (SkeletonJson* self, const char* jso
 	if (animations) {
 		int animationCount = Json_getSize(animations);
 		skeletonData->animations = MALLOC(Animation*, animationCount);
-		for (i = 0; i < animationCount; ++i) {
-			Json* animationMap = Json_getItemAt(animations, i);
+        Json* animationMap(NULL);
+        for (animationMap = animations->child; animationMap; animationMap = animationMap->next)
+        {
 			_SkeletonJson_readAnimation(self, animationMap, skeletonData);
 		}
 	}

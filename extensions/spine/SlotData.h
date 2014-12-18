@@ -37,11 +37,11 @@ typedef struct {
 	float r, g, b, a;
 } SlotData;
 
-CC_EX_DLL SlotData* SlotData_create (const char* name, BoneData* boneData);
-CC_EX_DLL void SlotData_dispose (SlotData* self);
+SlotData* SlotData_create (const char* name, BoneData* boneData);
+void SlotData_dispose (SlotData* self);
 
 /* @param attachmentName May be 0 for no setup pose attachment. */
-CC_EX_DLL void SlotData_setAttachmentName (SlotData* self, const char* attachmentName);
+void SlotData_setAttachmentName (SlotData* self, const char* attachmentName);
 
 }} // namespace cocos2d { namespace extension {
 

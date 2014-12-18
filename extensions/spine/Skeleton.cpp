@@ -2,7 +2,7 @@
  * Copyright (c) 2013, Esoteric Software
  * All rights reserved.
  * 
- * Redistribution and use in source and binary forms, with or without
+ * Redistribution and use in source and binary forms, with or without3
  * modification, are permitted provided that the following conditions are met:
  * 
  * 1. Redistributions of source code must retain the above copyright notice, this
@@ -152,6 +152,7 @@ int Skeleton_setSkinByName (Skeleton* self, const char* skinName) {
 		Skeleton_setSkin(self, 0);
 		return 1;
 	}
+    
 	skin = SkeletonData_findSkin(self->data, skinName);
 	if (!skin) return 0;
 	Skeleton_setSkin(self, skin);

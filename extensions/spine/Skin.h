@@ -36,19 +36,19 @@ typedef struct {
 	const char* const name;
 } Skin;
 
-CC_EX_DLL Skin* Skin_create (const char* name);
-CC_EX_DLL void Skin_dispose (Skin* self);
+Skin* Skin_create (const char* name);
+void Skin_dispose (Skin* self);
 
 /* The Skin owns the attachment. */
-CC_EX_DLL void Skin_addAttachment (Skin* self, int slotIndex, const char* name, Attachment* attachment);
+void Skin_addAttachment (Skin* self, int slotIndex, const char* name, Attachment* attachment);
 /* Returns 0 if the attachment was not found. */
-CC_EX_DLL Attachment* Skin_getAttachment (const Skin* self, int slotIndex, const char* name);
+Attachment* Skin_getAttachment (const Skin* self, int slotIndex, const char* name);
 
 /* Returns 0 if the slot or attachment was not found. */
-CC_EX_DLL const char* Skin_getAttachmentName (const Skin* self, int slotIndex, int attachmentIndex);
+const char* Skin_getAttachmentName (const Skin* self, int slotIndex, int attachmentIndex);
 
 /** Attach each attachment in this skin if the corresponding attachment in oldSkin is currently attached. */
-CC_EX_DLL void Skin_attachAll (const Skin* self, struct Skeleton* skeleton, const Skin* oldSkin);
+void Skin_attachAll (const Skin* self, struct Skeleton* skeleton, const Skin* oldSkin);
 
 }} // namespace cocos2d { namespace extension {
 

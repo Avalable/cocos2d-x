@@ -34,10 +34,19 @@ namespace cocos2d { namespace extension {
 /**
 Draws a skeleton.
 */
-class CC_EX_DLL CCSkeleton: public cocos2d::CCNodeRGBA, public cocos2d::CCBlendProtocol {
+class CCSkeleton: public cocos2d::CCNodeRGBA, public cocos2d::CCBlendProtocol {
+    
+    // @PlusPingua
+    bool m_visible = true;
+    
 public:
 	Skeleton* skeleton;
 	Bone* rootBone;
+    
+    //@PlusPingya - Added list of bones to render
+    std::vector<std::string> renderSpecificBones;
+    void *preferenceRootParent = NULL;
+    
 	float timeScale;
 	bool debugSlots;
 	bool debugBones;
@@ -56,6 +65,9 @@ public:
 	virtual void update (float deltaTime);
 	virtual void draw ();
 	virtual cocos2d::CCRect boundingBox ();
+    
+    //@PlusPingya
+    void checkCoolingOffscreen();
 
 	// --- Convenience methods for common Skeleton_* functions.
 	void updateWorldTransform ();
@@ -63,6 +75,10 @@ public:
 	void setToSetupPose ();
 	void setBonesToSetupPose ();
 	void setSlotsToSetupPose ();
+    
+    //@PlusPingya - Added function to find and list all childs bones of the specificed bone
+    void setSpecifiedBoneToRender(const char* boneName);
+    bool findAndSetSpecifiedBoneChilds(BoneData* bone_data_, const char *bone_name_);
 
 	/* Returns 0 if the bone was not found. */
 	Bone* findBone (const char* boneName) const;

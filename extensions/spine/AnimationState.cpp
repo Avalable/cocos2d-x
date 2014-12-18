@@ -125,11 +125,20 @@ void AnimationState_setAnimation (AnimationState* self, Animation* newAnimation,
 	_AnimationState_setAnimation(self, newAnimation, loop);
 }
 
-void AnimationState_setAnimationByName (AnimationState* self, const char* animationName, int/*bool*/loop) {
-	Animation* animation = animationName ? SkeletonData_findAnimation(self->data->skeletonData, animationName) : 0;
-	AnimationState_setAnimation(self, animation, loop);
+//void AnimationState_setAnimationByName (AnimationState* self, const char* animationName, int/*bool*/loop) {
+//	Animation* animation = animationName ? SkeletonData_findAnimation(self->data->skeletonData, animationName) : 0;
+//	AnimationState_setAnimation(self, animation, loop);
+//}
+bool AnimationState_setAnimationByName (AnimationState* self, const char* animationName, int/*bool*/loop) {
+    Animation* animation = animationName ? SkeletonData_findAnimation(self->data->skeletonData, animationName) : 0;
+    AnimationState_setAnimation(self, animation, loop);
+    if (animation) {
+        return true;
+    }
+    return false;
 }
 
+    
 void AnimationState_clearAnimation (AnimationState* self) {
 	_Internal* internal = SUB_CAST(_Internal, self);
 	internal->previous = 0;
