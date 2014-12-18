@@ -312,6 +312,10 @@
 		4EF8999A16E207E70040A527 /* CCTMXXMLParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4EF8998E16E207E70040A527 /* CCTMXXMLParser.cpp */; };
 		4EF8999B16E207E70040A527 /* CCTMXXMLParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EF8998F16E207E70040A527 /* CCTMXXMLParser.h */; };
 		D43F7F8A15C7D8BA00D713FC /* CCTouch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43F7F8915C7D8BA00D713FC /* CCTouch.cpp */; };
+		EE2694FE1A42EC5C002C5DDC /* libwebp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EE2694FD1A42EC5C002C5DDC /* libwebp.a */; };
+		EE2695071A42ED61002C5DDC /* decode.h in Headers */ = {isa = PBXBuildFile; fileRef = EE2695041A42ED61002C5DDC /* decode.h */; };
+		EE2695081A42ED61002C5DDC /* encode.h in Headers */ = {isa = PBXBuildFile; fileRef = EE2695051A42ED61002C5DDC /* encode.h */; };
+		EE2695091A42ED61002C5DDC /* types.h in Headers */ = {isa = PBXBuildFile; fileRef = EE2695061A42ED61002C5DDC /* types.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -623,6 +627,10 @@
 		4EF8998E16E207E70040A527 /* CCTMXXMLParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCTMXXMLParser.cpp; sourceTree = "<group>"; };
 		4EF8998F16E207E70040A527 /* CCTMXXMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTMXXMLParser.h; sourceTree = "<group>"; };
 		D43F7F8915C7D8BA00D713FC /* CCTouch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCTouch.cpp; sourceTree = "<group>"; };
+		EE2694FD1A42EC5C002C5DDC /* libwebp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwebp.a; path = ../platform/third_party/ios/libraries/libwebp.a; sourceTree = "<group>"; };
+		EE2695041A42ED61002C5DDC /* decode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = decode.h; path = third_party/ios/webp/decode.h; sourceTree = "<group>"; };
+		EE2695051A42ED61002C5DDC /* encode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = encode.h; path = third_party/ios/webp/encode.h; sourceTree = "<group>"; };
+		EE2695061A42ED61002C5DDC /* types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = types.h; path = third_party/ios/webp/types.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -631,6 +639,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1551A343158F2AB200E66CFE /* Foundation.framework in Frameworks */,
+				EE2694FE1A42EC5C002C5DDC /* libwebp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -658,6 +667,7 @@
 		1551A341158F2AB200E66CFE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EE2694FD1A42EC5C002C5DDC /* libwebp.a */,
 				1551A342158F2AB200E66CFE /* Foundation.framework */,
 			);
 			name = Frameworks;
@@ -985,6 +995,7 @@
 				1551A47B158F2ADE00E66CFE /* ios */,
 				1551A4A4158F2ADE00E66CFE /* platform.cpp */,
 				1551A4A5158F2ADE00E66CFE /* platform.h */,
+				EE26950A1A42ED8A002C5DDC /* third_party */,
 			);
 			path = platform;
 			sourceTree = "<group>";
@@ -1256,6 +1267,32 @@
 			path = user_default;
 			sourceTree = "<group>";
 		};
+		EE26950A1A42ED8A002C5DDC /* third_party */ = {
+			isa = PBXGroup;
+			children = (
+				EE26950B1A42ED92002C5DDC /* ios */,
+			);
+			name = third_party;
+			sourceTree = "<group>";
+		};
+		EE26950B1A42ED92002C5DDC /* ios */ = {
+			isa = PBXGroup;
+			children = (
+				EE26950C1A42ED9D002C5DDC /* webp */,
+			);
+			name = ios;
+			sourceTree = "<group>";
+		};
+		EE26950C1A42ED9D002C5DDC /* webp */ = {
+			isa = PBXGroup;
+			children = (
+				EE2695041A42ED61002C5DDC /* decode.h */,
+				EE2695051A42ED61002C5DDC /* encode.h */,
+				EE2695061A42ED61002C5DDC /* types.h */,
+			);
+			name = webp;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1263,6 +1300,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE2695071A42ED61002C5DDC /* decode.h in Headers */,
+				EE2695081A42ED61002C5DDC /* encode.h in Headers */,
+				EE2695091A42ED61002C5DDC /* types.h in Headers */,
 				1551A629158F2ADE00E66CFE /* CCAction.h in Headers */,
 				1551A62B158F2ADE00E66CFE /* CCActionCamera.h in Headers */,
 				1551A62D158F2ADE00E66CFE /* CCActionCatmullRom.h in Headers */,
@@ -1702,21 +1742,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../platform/third_party/ios/libraries\"",
-					/Users/top/Desktop/libwebp/lib,
-					"/Users/top/Desktop/Cheetah/Code/cocos2d-x/external/libwebp/lib",
-					"$(PROJECT_DIR)/libwebsockets/android/lib/armeabi",
-					"$(PROJECT_DIR)/libwebsockets/android/lib/armeabi-v7a",
-					"$(PROJECT_DIR)/libwebsockets/android/lib/x86",
-					"$(PROJECT_DIR)/libwebsockets/ios/lib",
-					"$(PROJECT_DIR)/libwebsockets/win32/lib",
-					"$(PROJECT_DIR)/sqlite3/libraries/win32",
-					"/Users/top/Desktop/Cheetah/Code/cocos2d-x/external/libwebsockets/android/lib/armeabi",
-					"/Users/top/Desktop/Cheetah/Code/cocos2d-x/external/libwebsockets/android/lib/armeabi-v7a",
-					"/Users/top/Desktop/Cheetah/Code/cocos2d-x/external/libwebsockets/android/lib/x86",
-					"/Users/top/Desktop/Cheetah/Code/cocos2d-x/external/libwebsockets/ios/lib",
-					"/Users/top/Desktop/Cheetah/Code/cocos2d-x/external/libwebsockets/win32/lib",
-					"/Users/top/Desktop/Cheetah/Code/cocos2d-x/external/sqlite3/libraries/win32",
+					"\"$(SRCROOT)/../../../cocos2dx/platform/third_party/ios/libraries\"",
+					"\"$(SRCROOT)/../../../external/\"",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1744,21 +1771,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../platform/third_party/ios/libraries\"",
-					/Users/top/Desktop/libwebp/lib,
-					"/Users/top/Desktop/Cheetah/Code/cocos2d-x/external/libwebp/lib",
-					"$(PROJECT_DIR)/libwebsockets/android/lib/armeabi",
-					"$(PROJECT_DIR)/libwebsockets/android/lib/armeabi-v7a",
-					"$(PROJECT_DIR)/libwebsockets/android/lib/x86",
-					"$(PROJECT_DIR)/libwebsockets/ios/lib",
-					"$(PROJECT_DIR)/libwebsockets/win32/lib",
-					"$(PROJECT_DIR)/sqlite3/libraries/win32",
-					"/Users/top/Desktop/Cheetah/Code/cocos2d-x/external/libwebsockets/android/lib/armeabi",
-					"/Users/top/Desktop/Cheetah/Code/cocos2d-x/external/libwebsockets/android/lib/armeabi-v7a",
-					"/Users/top/Desktop/Cheetah/Code/cocos2d-x/external/libwebsockets/android/lib/x86",
-					"/Users/top/Desktop/Cheetah/Code/cocos2d-x/external/libwebsockets/ios/lib",
-					"/Users/top/Desktop/Cheetah/Code/cocos2d-x/external/libwebsockets/win32/lib",
-					"/Users/top/Desktop/Cheetah/Code/cocos2d-x/external/sqlite3/libraries/win32",
+					"\"$(SRCROOT)/../../../cocos2dx/platform/third_party/ios/libraries\"",
+					"\"$(SRCROOT)/../../../external/\"",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
