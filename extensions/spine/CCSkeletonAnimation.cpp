@@ -144,7 +144,7 @@ void CCSkeletonAnimation::clearAnimation (int stateIndex) {
     
 cocos2d::CCPoint CCSkeletonAnimation::getBonePosition(const char* bone_name) {
     if (Bone* bone = findBone(bone_name)) {
-        return ccp(bone->data->x, bone->data->y);
+        return ccp(bone->x, bone->y);
     }
     return CCPointZero;
 }
