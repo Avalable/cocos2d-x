@@ -46,6 +46,12 @@ typedef void (CCObject::*SEL_HttpResponse)(CCHttpClient* client, CCHttpResponse*
 class CC_EX_DLL CCHttpRequest : public CCObject
 {
 public:
+    
+    bool                        last;          /// Indicate that this request will add to last of the queue
+    
+    /** Set number of retries, re-send the request */
+    int                         retries;
+    
     /** Use this enum type as param in setReqeustType(param) */
     typedef enum
     {
@@ -71,6 +77,8 @@ public:
         _pTarget = NULL;
         _pSelector = NULL;
         _pUserData = NULL;
+        
+        retries = 5;
     };
     
     /** Destructor */
