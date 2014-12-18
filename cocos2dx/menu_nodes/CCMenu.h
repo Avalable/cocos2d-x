@@ -184,6 +184,8 @@ public:
     
     virtual bool isEnabled() { return m_bEnabled; }
     virtual void setEnabled(bool value) { m_bEnabled = value; };
+    
+    CCMenuItem *getSelectedItem() { return m_pSelectedItem; }
 
 protected:
     CCMenuItem* itemForTouch(CCTouch * touch);
