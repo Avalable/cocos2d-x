@@ -43,6 +43,11 @@ static const int kMaxLogLen = 16*1024;
 void CC_DLL CCLog(const char * pszFormat, ...) CC_FORMAT_PRINTF(1, 2);
 
 /**
+ @brief Output Debug message containing Memory Usage.
+ */
+void CCLogMemUsage(void);
+
+/**
  * lua can not deal with ...
  */
 void CC_DLL CCLuaLog(const char * pszFormat);
