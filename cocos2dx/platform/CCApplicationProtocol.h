@@ -74,6 +74,12 @@ public:
     @param  the pointer of the application
     */
     virtual void applicationWillEnterForeground() = 0;
+    
+    /**
+    @brief  the function will be called when the application did receive memory warning
+    @param  the pointer of the application
+    */
+    virtual void applicationDidReceiveMemoryWarning() = 0;
 
     /**
     @brief    Callback by CCDirector for limit FPS.
