@@ -57,6 +57,8 @@ public:
 	void setAnimation (const char* name, bool loop, int stateIndex = 0);
 	void addAnimation (const char* name, bool loop, float delay = 0, int stateIndex = 0);
 	void clearAnimation (int stateIndex = 0);
+    
+    cocos2d::CCPoint getBonePosition(const char* bone_name);
 
 protected:
 	CCSkeletonAnimation ();
