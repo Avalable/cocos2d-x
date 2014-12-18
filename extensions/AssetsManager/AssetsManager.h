@@ -31,7 +31,7 @@
 
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_WINRT) && (CC_TARGET_PLATFORM != CC_PLATFORM_WP8)
 #include <string>
-#include <curl/curl.h>
+#include "curl.h"
 #include <pthread.h>
 
 NS_CC_EXT_BEGIN

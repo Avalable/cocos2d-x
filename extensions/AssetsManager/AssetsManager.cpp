@@ -26,8 +26,8 @@
 #include "cocos2d.h"
 
 #if (CC_TARGET_PLATFORM != CC_PLATFORM_WINRT) && (CC_TARGET_PLATFORM != CC_PLATFORM_WP8)
-#include <curl/curl.h>
-#include <curl/easy.h>
+#include "curl.h"
+#include "easy.h"
 
 #include <stdio.h>
 #include <vector>
