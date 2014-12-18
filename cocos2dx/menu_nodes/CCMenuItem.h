@@ -65,6 +65,8 @@ public:
     /* callback will be called before it is actually active */
     void (*onWillActive)(void*);
     void* onWillActiveSender;
+    void (*onWillRelease)(void*);
+    void* onWillReleaseSender;
     
     /**
      *  @js ctor

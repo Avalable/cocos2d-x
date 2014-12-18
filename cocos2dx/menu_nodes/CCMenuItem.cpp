@@ -67,6 +67,8 @@ bool CCMenuItem::initWithTarget(CCObject *rec, SEL_MenuHandler selector)
 {
     onWillActive = NULL;
     onWillActiveSender = NULL;
+    onWillRelease = NULL;
+    onWillReleaseSender = NULL;
     
     setAnchorPoint(ccp(0.5f, 0.5f));
     m_pListener = rec;
@@ -78,6 +80,11 @@ bool CCMenuItem::initWithTarget(CCObject *rec, SEL_MenuHandler selector)
 
 CCMenuItem::~CCMenuItem()
 {
+    //@Plus Pingya
+    if (onWillRelease) {
+        onWillRelease(onWillReleaseSender);
+    }
+    
     unregisterScriptTapHandler();
 }
 
