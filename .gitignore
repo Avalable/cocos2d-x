@@ -1,6 +1,5 @@
 # Ignore thumbnails created by windows
 Thumbs.db
-
 # Ignore files build by Visual Studio
 *.obj
 *.exe
@@ -35,7 +34,6 @@ Generated Files
 AppPackages
 SubmissionInfo
 *.hps
-
 # Ignore files build by ndk and eclipse
 libs/
 bin/
@@ -43,7 +41,6 @@ obj/
 gen/
 assets/
 local.properties
-
 # Ignore specific winrt files
 cocos2dx/platform/third_party/winrt/freetype/src
 cocos2dx/platform/third_party/winrt/libpng/lpng142
@@ -59,7 +56,6 @@ samples/Cpp/HelloCpp/proj.winrt/Assets/Resources/
 samples/Cpp/TestCpp/proj.winrt/Assets/Resources/
 samples/Cpp/HelloCpp/proj.wp8/Assets/Resources/
 samples/Cpp/TestCpp/proj.wp8/Assets/Resources/
-
 # Ignore files built by NaCl
 samples/Cpp/HelloCpp/proj.nacl/Resources/
 samples/Cpp/TestCpp/proj.nacl/Resources/
@@ -67,14 +63,11 @@ samples/Cpp/TestCpp/proj.nacl/out/
 samples/Cpp/SimpleGame/proj.nacl/Resources/
 samples/Lua/HelloLua/proj.nacl/Resources/
 samples/Lua/TestLua/proj.nacl/Resources/
-
 # Ignore python compiled files
 *.pyc
-
 # Ignore files build by airplay and marmalade
 build_*_xcode/
 build_*_vc10/
-
 # Ignore files build by xcode
 *.mode*v*
 *.pbxuser
@@ -88,27 +81,22 @@ build/
 xcuserdata/
 DerivedData/
 *.xccheckout
-
 # Ignore files built by bada
 .Simulator-Debug/
 .Target-Debug/
 .Target-Release/
-
 # Ignore files built by blackberry
 Simulator/
 Device-Debug/
 Device-Release/
-
 # Ignore vim swaps
 *.swp
-
 # Ignore config files in javascript bindings generator
 tools/tojs/user.cfg
 # ... userconf.ini generated if running from tools/tojs
 tools/tojs/userconf.ini
 # ... userconf.ini generated if running from tools/jenkins_scripts/mac/android/
 tools/jenkins_scripts/mac/android/userconf.ini
-
 # CTags
 tags
 /CocosDenshion/third_party/
@@ -125,3 +113,4 @@ tags
 /tools/tolua++/tolua++.rar
 /v*-deps-*.zip
 /external/version.json
+projects
