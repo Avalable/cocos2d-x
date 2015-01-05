@@ -61,12 +61,15 @@ protected:
 
 public:
     
-    //@PlusPingya
+    //@PlusPingya ////////////////////////////////////////////
     /* callback will be called before it is actually active */
     void (*onWillActive)(void*);
     void* onWillActiveSender;
     void (*onWillRelease)(void*);
     void* onWillReleaseSender;
+    void *onSelectedSender;
+    void (*onSelectedCallback)(void*, bool select); //or false is unselect
+    //////////////////////////////////////////////////////////
     
     /**
      *  @js ctor
