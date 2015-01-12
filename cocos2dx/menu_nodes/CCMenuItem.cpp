@@ -69,6 +69,8 @@ bool CCMenuItem::initWithTarget(CCObject *rec, SEL_MenuHandler selector)
     onWillActiveSender = NULL;
     onWillRelease = NULL;
     onWillReleaseSender = NULL;
+    onSelectedSender = NULL;
+    onSelectedCallback = NULL;
     
     setAnchorPoint(ccp(0.5f, 0.5f));
     m_pListener = rec;
@@ -91,11 +93,19 @@ CCMenuItem::~CCMenuItem()
 void CCMenuItem::selected()
 {
     m_bSelected = true;
+    //@Plus Pingya
+    if (onSelectedCallback) {
+        onSelectedCallback(onSelectedSender, m_bSelected);
+    }
 }
 
 void CCMenuItem::unselected()
 {
     m_bSelected = false;
+    //@Plus Pingya
+    if (onSelectedCallback) {
+        onSelectedCallback(onSelectedSender, m_bSelected);
+    }
 }
 
 void CCMenuItem::registerScriptTapHandler(int nHandler)
