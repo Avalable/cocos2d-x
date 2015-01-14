@@ -53,10 +53,7 @@ public:
     
     /** Relase the shared instance **/
     static void destroyInstance();
-    
-    /** Clear all request **/
-    void clearAllRequest();
-    
+        
     /**
      * Add a get request to task queue
      * @param request a CCHttpRequest object, which includes url, response callback etc.
@@ -64,11 +61,7 @@ public:
      * @return NULL
      */
     void send(CCHttpRequest* request);
-    
-    /** .. */
-    void send(CCHttpRequest* request, bool add_to_last);
   
-    void _send(CCHttpRequest* request);
     
     /**
      * Change the connect timeout
@@ -103,7 +96,7 @@ private:
     CCHttpClient();
     virtual ~CCHttpClient();
     bool init(void);
-    void check();
+    
     /**
      * Init pthread mutex, semaphore, and create new thread for http requests
      * @return bool
@@ -116,8 +109,6 @@ private:
     int _timeoutForConnect;
     int _timeoutForRead;
     
-    
-    std::vector<CCHttpRequest*> m_requestQueue;
     // std::string reqId;
 };
 

@@ -39,7 +39,7 @@ typedef void* THREAD_VOID;
 #include <errno.h>
 #include <queue>
 
-#include <curl/curl.h>
+#include "curl/curl.h"
 
 NS_CC_EXT_BEGIN
 
@@ -51,14 +51,12 @@ static pthread_mutex_t		s_SleepMutex;
 static pthread_cond_t		s_SleepCondition;
 
 static unsigned long    s_asyncRequestCount = 0;
-static unsigned long    s_waitingResponseCount = 0;
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 typedef int int32_t;
 #endif
 
 static bool need_quit = false;
-static int s_countRequestSent = 0;
 
 static CCArray* s_requestQueue = NULL;
 static CCArray* s_responseQueue = NULL;
@@ -104,7 +102,7 @@ static int processDeleteTask(CCHttpRequest *request, write_callback callback, vo
 
 
 // Worker thread
-static void* networkThread(void *data)
+static THREAD_VOID networkThread(THREAD_VOID)
 {    
     CCHttpRequest *request = NULL;
     
@@ -118,14 +116,12 @@ static void* networkThread(void *data)
         // step 1: send http request if the requestQueue isn't empty
         request = NULL;
         
-//        CCLog("requestQuene: %d, responseQuene: %d", s_requestQueue->count(), s_responseQueue->count());
         pthread_mutex_lock(&s_requestQueueMutex); //Get request task from queue
-        if (0 != s_requestQueue->count() && s_countRequestSent == 0)
+        if (0 != s_requestQueue->count())
         {
             request = dynamic_cast<CCHttpRequest*>(s_requestQueue->objectAtIndex(0));
             s_requestQueue->removeObjectAtIndex(0);  
             // request's refcount = 1 here
-            ++ s_waitingResponseCount;
         }
         pthread_mutex_unlock(&s_requestQueueMutex);
         
@@ -263,9 +259,9 @@ static bool configureCURL(CURL *handle)
     }
     curl_easy_setopt(handle, CURLOPT_SSL_VERIFYPEER, 0L);
     curl_easy_setopt(handle, CURLOPT_SSL_VERIFYHOST, 0L);
-    
+
     // FIXED #3224: The subthread of CCHttpClient interrupts main thread if timeout comes.
-    // Document is here: http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTNOSIGNAL
+    // Document is here: http://curl.haxx.se/libcurl/c/curl_easy_setopt.html#CURLOPTNOSIGNAL 
     curl_easy_setopt(handle, CURLOPT_NOSIGNAL, 1L);
 
     return true;
@@ -397,7 +393,6 @@ CCHttpClient* CCHttpClient::getInstance()
 {
     if (s_pHttpClient == NULL) {
         s_pHttpClient = new CCHttpClient();
-       
     }
     
     return s_pHttpClient;
@@ -410,12 +405,6 @@ void CCHttpClient::destroyInstance()
     s_pHttpClient->release();
 }
 
-void CCHttpClient::clearAllRequest()
-{
-    s_requestQueue->removeAllObjects();
-    m_requestQueue.clear();
-}
-
 CCHttpClient::CCHttpClient()
 : _timeoutForConnect(30)
 , _timeoutForRead(60)
@@ -423,7 +412,6 @@ CCHttpClient::CCHttpClient()
     CCDirector::sharedDirector()->getScheduler()->scheduleSelector(
                     schedule_selector(CCHttpClient::dispatchResponseCallbacks), this, 0, false);
     CCDirector::sharedDirector()->getScheduler()->pauseTarget(this);
-    
 }
 
 CCHttpClient::~CCHttpClient()
@@ -435,17 +423,6 @@ CCHttpClient::~CCHttpClient()
     }
     
     s_pHttpClient = NULL;
-}
-
-void CCHttpClient::check() {
-    
-    if (s_waitingResponseCount == 0) {
-        if (m_requestQueue.size() > 0) {
-            _send(m_requestQueue[0]);
-            m_requestQueue.erase(m_requestQueue.begin());
-        }
-    }
-    
 }
 
 //Lazy create semaphore & mutex & thread
@@ -467,10 +444,10 @@ bool CCHttpClient::lazyInitThreadSemphore()
         pthread_mutex_init(&s_SleepMutex, NULL);
         pthread_cond_init(&s_SleepCondition, NULL);
 
+        need_quit = false;
         pthread_create(&s_networkThread, NULL, networkThread, NULL);
         pthread_detach(s_networkThread);
         
-        need_quit = false;
     }
     
     return true;
@@ -478,27 +455,8 @@ bool CCHttpClient::lazyInitThreadSemphore()
 
 //Add a get task to queue
 void CCHttpClient::send(CCHttpRequest* request)
-{
-    send(request, true);
-}
-
-//Add a get task to queue
-void CCHttpClient::send(CCHttpRequest* request, bool add_to_last)
-{
-    request->retain();
-    
-    if (add_to_last) {
-        m_requestQueue.push_back(request);
-    }else {
-        m_requestQueue.insert(m_requestQueue.begin(), request);
-    }
-    
-    check();
-}
-
-void CCHttpClient::_send(CCHttpRequest *request) {
-    
-    if (false == lazyInitThreadSemphore())
+{    
+    if (false == lazyInitThreadSemphore()) 
     {
         return;
     }
@@ -507,9 +465,11 @@ void CCHttpClient::_send(CCHttpRequest *request) {
     {
         return;
     }
-    
+        
     ++s_asyncRequestCount;
     
+    request->retain();
+        
     pthread_mutex_lock(&s_requestQueueMutex);
     s_requestQueue->addObject(request);
     pthread_mutex_unlock(&s_requestQueueMutex);
@@ -530,7 +490,6 @@ void CCHttpClient::dispatchResponseCallbacks(float delta)
     {
         response = dynamic_cast<CCHttpResponse*>(s_responseQueue->objectAtIndex(0));
         s_responseQueue->removeObjectAtIndex(0);
-        -- s_waitingResponseCount;
     }
     pthread_mutex_unlock(&s_responseQueueMutex);
     
@@ -542,19 +501,9 @@ void CCHttpClient::dispatchResponseCallbacks(float delta)
         CCObject *pTarget = request->getTarget();
         SEL_HttpResponse pSelector = request->getSelector();
 
-        if (response->getResponseData()->size() == 0 && request->retries > 0) {
-            request->retries --;
-            CCLog("resend: %s?%s",
-                  request->getUrl(),
-                  request->getRequestData());
-            send(request);
-        }else {
-            
-            if (pTarget && pSelector)
-            {
-                (pTarget->*pSelector)(this, response);
-            }
-            check();
+        if (pTarget && pSelector) 
+        {
+            (pTarget->*pSelector)(this, response);
         }
         
         response->release();
@@ -568,5 +517,7 @@ void CCHttpClient::dispatchResponseCallbacks(float delta)
 }
 
 NS_CC_EXT_END
+
+
 
 

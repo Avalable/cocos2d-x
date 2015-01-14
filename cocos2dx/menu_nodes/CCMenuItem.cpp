@@ -95,7 +95,7 @@ CCMenuItem::~CCMenuItem()
 void CCMenuItem::selected()
 {
     m_bSelected = true;
-    
+
     //@Plus Pingya
     if (onSelectedCallback) {
         onSelectedCallback(onSelectedSender, m_bSelected);
