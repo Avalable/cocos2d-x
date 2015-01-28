@@ -10,6 +10,7 @@
 
 #include <zlib.h>
 #include "Zipper.h"
+#include "../../platform/CCCommon.h"
 
 namespace cocos2d
 {
@@ -21,7 +22,7 @@ namespace cocos2d
         memset(&zs, 0, sizeof(zs));
 
         if (deflateInit(&zs, compressionlevel) != Z_OK)
-            throw(std::runtime_error("deflateInit failed while compressing."));
+            CCLog("deflateInit failed while compressing.");
 
         zs.next_in = (Bytef *) str.data();
         zs.avail_in = str.size();           // set the z_stream's input
@@ -49,7 +50,9 @@ namespace cocos2d
         if (ret != Z_STREAM_END) {          // an error occurred that was not EOF
             std::ostringstream oss;
             oss << "Exception during zlib compression: (" << ret << ") " << zs.msg;
-            throw(std::runtime_error(oss.str()));
+            CCLog("%s",oss.str().c_str());
+//            throw(std::runtime_error(oss.str()));
+
         }
 
         return outstring;
@@ -62,7 +65,7 @@ namespace cocos2d
         memset(&zs, 0, sizeof(zs));
 
         if (inflateInit(&zs) != Z_OK)
-            throw(std::runtime_error("inflateInit failed while decompressing."));
+            CCLog("inflateInit failed while decompressing.");
 
         zs.next_in = (Bytef *) str.data();
         zs.avail_in = str.size();
@@ -91,7 +94,7 @@ namespace cocos2d
             std::ostringstream oss;
             oss << "Exception during zlib decompression: (" << ret << ") "
                     << zs.msg;
-            throw(std::runtime_error(oss.str()));
+            CCLog("%s",oss.str().c_str());
         }
 
         return outstring;
