@@ -123,6 +123,7 @@ support/tinyxml2/tinyxml2.cpp \
 support/zip_support/ZipUtils.cpp \
 support/zip_support/ioapi.cpp \
 support/zip_support/unzip.cpp \
+support/zip_support/Zipper.cpp \
 support/component/CCComponent.cpp \
 support/component/CCComponentContainer.cpp \
 text_input_node/CCIMEDispatcher.cpp \
@@ -172,6 +173,7 @@ LOCAL_EXPORT_CFLAGS := -Wno-psabi -DUSE_FILE32API
 
 include $(BUILD_STATIC_LIBRARY)
 
+$(call import-add-path, $(LOCAL_PATH)/platform/third_party/android/prebuilt)
 $(call import-module,libjpeg)
 $(call import-module,libpng)
 $(call import-module,libtiff)
