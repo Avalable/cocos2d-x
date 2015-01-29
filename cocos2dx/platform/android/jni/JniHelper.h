@@ -46,6 +46,11 @@ public:
     static bool getStaticMethodInfo(JniMethodInfo &methodinfo, const char *className, const char *methodName, const char *paramCode);
     static bool getMethodInfo(JniMethodInfo &methodinfo, const char *className, const char *methodName, const char *paramCode);
     static std::string jstring2string(jstring str);
+    static long getNativeHeapAllocatedSize();
+    static long getNativeHeapSize();
+    static jobjectArray makeStringArray(jsize count, std::string array[]);
+    static jintArray makeIntArray(jsize count, int array[]);
+    static jbyteArray makeByteArray(std::string data);
 
 private:
     static JavaVM *m_psJavaVM;

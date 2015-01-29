@@ -223,4 +223,112 @@ string JniHelper::jstring2string(jstring str)
     return jstring2string_(str);
 }
 
+long JniHelper::getNativeHeapAllocatedSize()
+{
+    JNIEnv *env = 0;
+
+    if (! getEnv(&env))
+    {
+        return -1L;
+    }
+
+    jclass clazz = getClassID("android/os/Debug", env);
+    if (clazz)
+    {
+        JniMethodInfo methodInfo;
+        if (! getStaticMethodInfo(methodInfo, "android/os/Debug", "getNativeHeapAllocatedSize", "()J"))
+        {            
+            return -1L;
+        }
+
+        return methodInfo.env->CallStaticLongMethod(methodInfo.classID, methodInfo.methodID);
+    }
+    return -1L;
+}
+
+long JniHelper::getNativeHeapSize()
+{
+    JNIEnv *env = 0;
+
+    if (! getEnv(&env))
+    {
+        return -1L;
+    }
+
+    jclass clazz = getClassID("android/os/Debug", env);
+    if (clazz)
+    {
+        JniMethodInfo methodInfo;
+        if (! getStaticMethodInfo(methodInfo, "android/os/Debug", "getNativeHeapSize", "()J"))
+        {            
+            return -1L;
+        }
+
+        return methodInfo.env->CallStaticLongMethod(methodInfo.classID, methodInfo.methodID);
+    }
+    return -1L;
+}
+
+jobjectArray JniHelper::makeStringArray(jsize count, std::string array[])
+{
+    JNIEnv *env = 0;
+
+    if (! getEnv(&env))
+    {
+        return NULL;
+    }
+
+    jclass stringClass = env->FindClass("java/lang/String");
+    jobjectArray row = env->NewObjectArray(count, stringClass, 0);
+    jsize i;
+
+    for (i = 0; i < count; ++i) {
+        env->SetObjectArrayElement(row, i, env->NewStringUTF(array[i].c_str()));
+    }
+    return row;
+}
+
+jintArray JniHelper::makeIntArray(jsize count, int array[])
+{
+    JNIEnv *env = 0;
+
+    if (! getEnv(&env))
+    {
+        return NULL;
+    }
+
+    jintArray result;
+    result = env->NewIntArray(count);
+    if (result == NULL) {
+         return NULL; /* out of memory error thrown */
+    }
+    
+    int i;
+    jint fill[count];
+    for (i = 0; i < count; i++) {
+         fill[i] = array[i];
+    }
+
+     // move from the temp structure to the java structure
+    env->SetIntArrayRegion(result, 0, count, fill);
+    return result;
+}
+
+jbyteArray JniHelper::makeByteArray(std::string data)
+{
+    JNIEnv *env = 0;
+
+    if (! getEnv(&env))
+    {
+        return NULL;
+    }
+
+    const int length = data.length();
+
+    jbyteArray array = env->NewByteArray(length);
+    env->SetByteArrayRegion (array, 0, length, reinterpret_cast<const signed char *>(data.c_str()));
+
+    return array;
+}
+
 NS_CC_END
