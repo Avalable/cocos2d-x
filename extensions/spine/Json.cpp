@@ -424,7 +424,7 @@ if (*value != '{') {
     const char *Json_getString(Json *object, const char *name, const char *defaultValue)
     {
         object = Json_getItem(object, name);
-        if (object) return object->valuestring;
+        if (object && object->valuestring) return object->valuestring;
         return defaultValue;
     }
 
