@@ -26,6 +26,7 @@ package org.cocos2dx.lib;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -119,6 +120,7 @@ public class Cocos2dxEditBoxDialog extends Dialog {
 
 	private EditText mInputEditText;
 	private TextView mTextViewTitle;
+	private Cocos2dxCustomTextWatcher mTextWatcher;
 
 	private final String mTitle;
 	private final String mMessage;
@@ -181,6 +183,9 @@ public class Cocos2dxEditBoxDialog extends Dialog {
 		this.mInputEditText.setImeOptions(oldImeOptions | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 		oldImeOptions = this.mInputEditText.getImeOptions();
 
+		if(this.mTextWatcher == null)
+			this.mTextWatcher = new Cocos2dxCustomTextWatcher(this.mInputEditText);
+		
 		switch (this.mInputMode) {
 			case kEditBoxInputModeAny:
 				this.mInputModeContraints = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE;
@@ -212,7 +217,7 @@ public class Cocos2dxEditBoxDialog extends Dialog {
 			this.mInputModeContraints |= InputType.TYPE_TEXT_FLAG_MULTI_LINE;
 		}
 
-		this.mInputEditText.setInputType(this.mInputModeContraints | this.mInputFlagConstraints);
+		//this.mInputEditText.setInputType(this.mInputModeContraints | this.mInputFlagConstraints);
 
 		switch (this.mInputFlag) {
 			case kEditBoxInputFlagPassword:
@@ -234,8 +239,23 @@ public class Cocos2dxEditBoxDialog extends Dialog {
 				break;
 		}
 
-		this.mInputEditText.setInputType(this.mInputFlagConstraints | this.mInputModeContraints);
-
+		// quick fix. parameters sent as non-hex does not register well with Edit Text
+		if(this.mInputFlagConstraints == InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
+				&& this.mInputModeContraints == InputType.TYPE_CLASS_TEXT) {
+			this.mInputEditText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_CLASS_TEXT);
+			this.mInputEditText.removeTextChangedListener(this.mTextWatcher);
+		}
+		else if(this.mInputMode == kEditBoxInputModeNumeric) {
+			this.mInputEditText.setInputType(InputType.TYPE_CLASS_TEXT);
+			
+			// quick fix. parameters sent as non-hex does not register well with Edit Text
+			this.mInputEditText.addTextChangedListener(this.mTextWatcher);
+		}
+		else {
+			this.mInputEditText.setInputType(this.mInputFlagConstraints | this.mInputModeContraints);
+			this.mInputEditText.removeTextChangedListener(this.mTextWatcher);
+		}
+		
 		switch (this.mReturnType) {
 			case kKeyboardReturnTypeDefault:
 				this.mInputEditText.setImeOptions(oldImeOptions | EditorInfo.IME_ACTION_NONE);
