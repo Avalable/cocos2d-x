@@ -81,7 +81,10 @@ Basically, it's only enabled for Emscripten.
 It's new in cocos2d-x since v0.99.5
 */
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_EMSCRIPTEN) || (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
-    #define CC_ENABLE_CACHE_TEXTURE_DATA       1
+    //#define CC_ENABLE_CACHE_TEXTURE_DATA       1
+	// fix for crash when resuming app from a long time in background
+	// https://github.com/cocos2d/cocos2d-x/pull/1758/files
+	#define CC_ENABLE_CACHE_TEXTURE_DATA       0
 #else
     #define CC_ENABLE_CACHE_TEXTURE_DATA       0
 #endif
