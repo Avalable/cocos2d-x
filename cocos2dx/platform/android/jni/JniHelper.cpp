@@ -288,6 +288,25 @@ jobjectArray JniHelper::makeStringArray(jsize count, std::string array[])
     return row;
 }
 
+jobjectArray JniHelper::makeStringArray(const std::vector<std::string>& array)
+{
+    JNIEnv *env = 0;
+
+    if (! getEnv(&env))
+    {
+        return NULL;
+    }
+
+    jclass stringClass = env->FindClass("java/lang/String");
+    jobjectArray row = env->NewObjectArray(array.size(), stringClass, 0);
+    jsize i;
+
+    for (i = 0; i < array.size(); ++i) {
+        env->SetObjectArrayElement(row, i, env->NewStringUTF(array[i].c_str()));
+    }
+    return row;
+}
+
 jintArray JniHelper::makeIntArray(jsize count, int array[])
 {
     JNIEnv *env = 0;

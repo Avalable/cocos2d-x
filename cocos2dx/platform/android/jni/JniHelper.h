@@ -26,6 +26,7 @@ THE SOFTWARE.
 
 #include <jni.h>
 #include <string>
+#include <vector>
 #include "platform/CCPlatformMacros.h"
 
 NS_CC_BEGIN
@@ -49,6 +50,7 @@ public:
     static long getNativeHeapAllocatedSize();
     static long getNativeHeapSize();
     static jobjectArray makeStringArray(jsize count, std::string array[]);
+    static jobjectArray makeStringArray(const std::vector<std::string>& array);
     static jintArray makeIntArray(jsize count, int array[]);
     static jbyteArray makeByteArray(std::string data);
 
