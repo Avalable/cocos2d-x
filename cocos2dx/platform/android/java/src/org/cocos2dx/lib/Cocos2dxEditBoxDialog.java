@@ -33,6 +33,7 @@ import android.os.Handler;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.TypedValue;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -42,11 +43,18 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+import android.text.Spanned;
+import android.text.*;
 
 public class Cocos2dxEditBoxDialog extends Dialog {
 	// ===========================================================
 	// Constants
 	// ===========================================================
+
+	/**
+	* Filter for TextInput, only these characters are valid
+	*/
+	final String textFilter = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890._-"; 
 
 	/**
 	 * The user is allowed to enter any text, including line breaks.
@@ -304,6 +312,57 @@ public class Cocos2dxEditBoxDialog extends Dialog {
 				return false;
 			}
 		});
+
+		InputFilter filter = new InputFilter() {
+			@Override
+		    public CharSequence filter(CharSequence source, int start, int end,
+		            Spanned dest, int dstart, int dend) {
+
+		        if (source instanceof SpannableStringBuilder) {
+		            SpannableStringBuilder sourceAsSpannableBuilder = (SpannableStringBuilder)source;
+		            for (int i = end - 1; i >= start; i--) { 
+		                char currentChar = source.charAt(i);
+
+		                if (textFilter.indexOf((int)currentChar) == -1)
+		                {
+		                	sourceAsSpannableBuilder.delete(i, i+1);
+		                }
+		            }
+		            return source;
+		        } else {
+		            StringBuilder filteredStringBuilder = new StringBuilder();
+		            for (int i = start; i < end; i++) { 
+		                char currentChar = source.charAt(i);
+
+		                if (textFilter.indexOf((int)currentChar) != -1)
+		                {
+		                	filteredStringBuilder.append(currentChar);
+		                }
+		            }
+		            return filteredStringBuilder.toString();
+		        }
+		    }
+		};
+		
+		mInputEditText.setFilters(new InputFilter[] { filter });
+		
+		/*this.mInputEditText.addTextChangedListener(new TextWatcher()
+		{
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+	        }
+
+			@Override
+	        public void onTextChanged(CharSequence s, int start, int before, int count) {
+	        }
+
+			@Override
+	        public void afterTextChanged(Editable s) {
+	            if (s.length() > 0) {
+	            	s.getText
+	            }
+	        }
+		});*/
 	}
 
 
