@@ -309,41 +309,30 @@ public class Cocos2dxEditBoxDialog extends Dialog {
 			}
 		});
 
-		InputFilter letterFilter = new InputFilter() {
-			@Override
-		    public CharSequence filter(CharSequence source, int start, int end,
-		            Spanned dest, int dstart, int dend) {
-
-		        if (source instanceof SpannableStringBuilder) {
-		            SpannableStringBuilder sourceAsSpannableBuilder = (SpannableStringBuilder)source;
-		            for (int i = end - 1; i >= start; i--) { 
-		                char currentChar = source.charAt(i);
-
-		                if (textFilter.indexOf((int)currentChar) == -1)
-		                {
-		                	sourceAsSpannableBuilder.delete(i, i+1);
-		                }
-		            }
-		            return source;
-		        } else {
-		            StringBuilder filteredStringBuilder = new StringBuilder();
-		            for (int i = start; i < end; i++) { 
-		                char currentChar = source.charAt(i);
-
-		                if (textFilter.indexOf((int)currentChar) != -1)
-		                {
-		                	filteredStringBuilder.append(currentChar);
-		                }
-		            }
-		            return filteredStringBuilder.toString();
-		        }
-		    }
-		};
-
 		mInputEditText.setFilters(new InputFilter[] {
-		 new InputFilter.LengthFilter(this.mMaxLength),
-		 letterFilter
+				new InputFilter.LengthFilter(this.mMaxLength),
 		});
+		
+		mInputEditText.addTextChangedListener(new TextWatcher() {
+
+		    public void onTextChanged(CharSequence s, int start, int before, int count) {
+		        // TODO Auto-generated method stub
+		    }
+
+		    public void beforeTextChanged(CharSequence s, int start, int count,
+		            int after) {
+		        // TODO Auto-generated method stub
+		    }
+
+		    public void afterTextChanged(Editable s) {
+		        // TODO Auto-generated method stub
+		         for( int i = 0;i<s.toString().length(); i++ ) {
+		             if( textFilter.indexOf((int)s.charAt(i)) == -1) {                    
+		                s.replace(i, i+1,"");               
+		             }
+		         }
+		    }
+	   });		
 	}
 
 
