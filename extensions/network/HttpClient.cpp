@@ -405,6 +405,12 @@ void CCHttpClient::destroyInstance()
     s_pHttpClient->release();
 }
 
+CCArray* CCHttpClient::getRequestQueue() {
+    
+    return s_requestQueue;
+    
+}
+
 CCHttpClient::CCHttpClient()
 : _timeoutForConnect(30)
 , _timeoutForRead(60)

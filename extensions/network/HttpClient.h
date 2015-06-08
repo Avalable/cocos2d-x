@@ -53,7 +53,10 @@ public:
     
     /** Relase the shared instance **/
     static void destroyInstance();
-        
+    
+    /** Return the shared requestQueue **/
+    static CCArray* getRequestQueue();
+    
     /**
      * Add a get request to task queue
      * @param request a CCHttpRequest object, which includes url, response callback etc.
