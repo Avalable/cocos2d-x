@@ -76,7 +76,7 @@ public:
      *  @js NA
      *  @lua NA
      */
-    virtual ~CCMenu();
+    virtual ~CCMenu() {};
 
     /** creates an empty CCMenu */
     static CCMenu* create();

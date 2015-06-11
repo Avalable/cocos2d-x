@@ -166,14 +166,6 @@ bool CCMenu::initWithArray(CCArray* pArrayOfItems)
     return false;
 }
 
-CCMenu::~CCMenu() {
-    
-    if (onWillReleased) {
-        onWillReleased(onWillReleasedSender);
-    }
-
-}
-
 /*
 * override add:
 */
@@ -195,6 +187,11 @@ void CCMenu::addChild(CCNode * child, int zOrder, int tag)
 
 void CCMenu::onExit()
 {
+    if (onWillReleased)
+    {
+        onWillReleased(onWillReleasedSender);
+    }
+    
     if (m_eState == kCCMenuStateTrackingTouch)
     {
         if (m_pSelectedItem)
