@@ -49,6 +49,7 @@ GUI/CCScrollView/CCSorting.cpp \
 GUI/CCEditBox/CCEditBox.cpp \
 GUI/CCEditBox/CCEditBoxImplAndroid.cpp \
 network/HttpClient.cpp \
+network/HttpClientAux.cpp \
 network/WebSocket.cpp \
 physics_nodes/CCPhysicsDebugNode.cpp \
 physics_nodes/CCPhysicsSprite.cpp \

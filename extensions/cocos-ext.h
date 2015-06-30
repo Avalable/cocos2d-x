@@ -40,6 +40,7 @@
 #include "network/HttpRequest.h"
 #include "network/HttpResponse.h"
 #include "network/HttpClient.h"
+#include "network/HttpClientAux.h"
 
 
 // Physics integration

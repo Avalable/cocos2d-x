@@ -32,8 +32,11 @@ NS_CC_EXT_BEGIN
 
 class CCHttpClient;
 class CCHttpResponse;
+namespace auxiliary { class CCHttpClientAux; }
 typedef void (CCObject::*SEL_HttpResponse)(CCHttpClient* client, CCHttpResponse* response);
+typedef void (CCObject::*SEL_HttpResponseAux)(auxiliary::CCHttpClientAux * client, CCHttpResponse* response);
 #define httpresponse_selector(_SELECTOR) (cocos2d::extension::SEL_HttpResponse)(&_SELECTOR)
+#define httpresponse_selector_aux(_SELECTOR) (cocos2d::extension::SEL_HttpResponseAux)(&_SELECTOR)
 
 /** 
  @brief defines the object which users must packed for CCHttpClient::send(HttpRequest*) method.
@@ -76,6 +79,7 @@ public:
         _tag.clear();
         _pTarget = NULL;
         _pSelector = NULL;
+        _pSelectorAux = NULL;
         _pUserData = NULL;
         
         retries = 5;
@@ -187,7 +191,19 @@ public:
         {
             _pTarget->retain();
         }
-    }    
+    }
+
+    inline void setResponseCallbackAux(CCObject *pTarget, SEL_HttpResponseAux pSelector)
+    {
+        _pTarget = pTarget;
+        _pSelectorAux = pSelector;
+
+        if (_pTarget)
+        {
+            _pTarget->retain();
+        }
+    }
+
     /** Get the target of callback selector funtion, mainly used by CCHttpClient */
     inline CCObject* getTarget()
     {
@@ -212,7 +228,24 @@ public:
     {
         return _prxy(_pSelector);
     }
-    
+
+    class _prxy_aux
+    {
+    public:
+        _prxy_aux( SEL_HttpResponseAux cb ) :_cb(cb) {}
+        ~_prxy_aux(){};
+        operator SEL_HttpResponseAux() const { return _cb; }
+        CC_DEPRECATED_ATTRIBUTE operator SEL_CallFuncND()   const { return (SEL_CallFuncND) _cb; }
+    protected:
+        SEL_HttpResponseAux _cb;
+    };
+
+    /** Get the selector function pointer, mainly used by CCHttpClient */
+    inline _prxy_aux getSelectorAux()
+    {
+        return _prxy_aux(_pSelectorAux);
+    }
+
     /** Set any custom headers **/
     inline void setHeaders(std::vector<std::string> pHeaders)
    	{
@@ -232,10 +265,11 @@ protected:
     std::string                 _url;            /// target url that this request is sent to
     std::vector<char>           _requestData;    /// used for POST
     std::string                 _tag;            /// user defined tag, to identify different requests in response callback
-    CCObject*          _pTarget;        /// callback target of pSelector function
+    CCObject*                   _pTarget;        /// callback target of pSelector function
     SEL_HttpResponse            _pSelector;      /// callback function, e.g. MyLayer::onHttpResponse(CCHttpClient *sender, CCHttpResponse * response)
+    SEL_HttpResponseAux         _pSelectorAux;   /// callback function using auxiliary network channel, e.g. MyLayer::onHttpResponse(CCHttpClient *sender, CCHttpResponse * response)
     void*                       _pUserData;      /// You can add your customed data here 
-    std::vector<std::string>    _headers;		      /// custom http headers
+    std::vector<std::string>    _headers;		 /// custom http headers
 };
 
 NS_CC_EXT_END
