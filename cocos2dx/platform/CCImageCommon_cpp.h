@@ -749,13 +749,9 @@ bool CCImage::saveToFile(const char *pszFilePath, bool bIsToRGB)
         {
             CC_BREAK_IF(!_saveImageToPNG(pszFilePath, bIsToRGB));
         }
-        else if (std::string::npos != strLowerCasePath.find(".jpg"))
-        {
-            CC_BREAK_IF(!_saveImageToJPG(pszFilePath));
-        }
         else
         {
-            break;
+            CC_BREAK_IF(!_saveImageToJPG(pszFilePath));
         }
 
         bRet = true;
@@ -922,7 +918,7 @@ bool CCImage::_saveImageToJPG(const char * pszFilePath)
         jpeg_create_compress(&cinfo);
 
         CC_BREAK_IF((outfile = fopen(pszFilePath, "wb")) == NULL);
-        
+       
         jpeg_stdio_dest(&cinfo, outfile);
 
         cinfo.image_width = m_nWidth;    /* image width and height, in pixels */
@@ -944,6 +940,7 @@ bool CCImage::_saveImageToJPG(const char * pszFilePath)
                 jpeg_finish_compress(&cinfo);
                 jpeg_destroy_compress(&cinfo);
                 fclose(outfile);
+
                 break;
             }
 
