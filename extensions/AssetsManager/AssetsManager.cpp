@@ -119,6 +119,7 @@ bool AssetsManager::checkUpdate()
     _curl = curl_easy_init();
     if (! _curl)
     {
+        sendErrorMessage(kNetwork);
         CCLOG("can not init curl");
         return false;
     }
@@ -385,8 +386,17 @@ static size_t downLoadPackage(void *ptr, size_t size, size_t nmemb, void *userda
     return written;
 }
 
+int prevPercent;
 int assetsManagerProgressFunc(void *ptr, double totalToDownload, double nowDownloaded, double totalToUpLoad, double nowUpLoaded)
 {
+    //START:fixing too fast progress update cause message queue to filled up
+    int currentPercent = (int)(nowDownloaded/totalToDownload*100);
+    if (currentPercent == prevPercent){
+        return 0;
+    }
+    prevPercent = currentPercent;
+    //END:fixing too fast progress update cause message queue to filled up
+    
     AssetsManager* manager = (AssetsManager*)ptr;
     AssetsManager::Message *msg = new AssetsManager::Message();
     msg->what = ASSETSMANAGER_MESSAGE_PROGRESS;

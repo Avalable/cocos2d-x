@@ -108,6 +108,8 @@ public:
      */
     void setVersionFileUrl(const char* versionFileUrl);
     
+    std::string getVersionFileContent(){return _version;}
+    
     /* @brief Gets current version code.
      */
     std::string getVersion();
