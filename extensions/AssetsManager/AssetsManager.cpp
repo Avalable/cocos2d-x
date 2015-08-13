@@ -387,6 +387,7 @@ static size_t downLoadPackage(void *ptr, size_t size, size_t nmemb, void *userda
 }
 
 int prevPercent;
+long int prevTime;
 int assetsManagerProgressFunc(void *ptr, double totalToDownload, double nowDownloaded, double totalToUpLoad, double nowUpLoaded)
 {
     //START:fixing too fast progress update cause message queue to filled up
@@ -394,7 +395,12 @@ int assetsManagerProgressFunc(void *ptr, double totalToDownload, double nowDownl
     if (currentPercent == prevPercent){
         return 0;
     }
+    long int currentTime = static_cast<long int>(time(NULL));
+    if (currentPercent<100 && currentTime == prevTime){
+        return 0;
+    }
     prevPercent = currentPercent;
+    prevTime = currentTime;
     //END:fixing too fast progress update cause message queue to filled up
     
     AssetsManager* manager = (AssetsManager*)ptr;
