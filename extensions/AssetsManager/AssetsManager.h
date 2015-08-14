@@ -196,6 +196,8 @@ private:
     pthread_t *_tid;
     unsigned int _connectionTimeout;
     
+    bool isComponentMatch(int index,std::string str1,std::string str2);
+    
     AssetsManagerDelegateProtocol *_delegate; // weak reference
 };
 

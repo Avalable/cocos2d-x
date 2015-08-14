@@ -39,6 +39,7 @@
 #endif
 
 #include "support/zip_support/unzip.h"
+#include "StringHelper.h"
 
 using namespace cocos2d;
 using namespace std;
@@ -112,6 +113,18 @@ static size_t getVersionCode(void *ptr, size_t size, size_t nmemb, void *userdat
     return (size * nmemb);
 }
 
+bool AssetsManager::isComponentMatch(int index, std::string str1, std::string str2){
+    vector<string> str1Components = StringHelper::split(str1, ',');
+    string component1 = "";
+    if (str1Components.size()>index) component1 = str1Components[index];
+    
+    vector<string> str2Components = StringHelper::split(str2, ',');
+    string component2 = "";
+    if (str2Components.size()>index) component2 = str2Components[index];
+    
+    return component1.compare(component2) == 0;
+}
+
 bool AssetsManager::checkUpdate()
 {
     if (_versionFileUrl.size() == 0) return false;
@@ -144,7 +157,9 @@ bool AssetsManager::checkUpdate()
     }
     
     string recordedVersion = CCUserDefault::sharedUserDefault()->getStringForKey(KEY_OF_VERSION);
-    if (recordedVersion == _version)
+    CCLOG("recordedVersion:%s",recordedVersion.c_str());
+    CCLOG("_version:%s",_version.c_str());
+    if (isComponentMatch(2, recordedVersion, _version))//(recordedVersion == _version)
     {
         sendErrorMessage(kNoNewVersion);
         CCLOG("there is not new version");
@@ -164,7 +179,7 @@ void* assetsManagerDownloadAndUncompress(void *data)
     
     do
     {
-        if (self->_downloadedVersion != self->_version)
+        if (!self->isComponentMatch(2, self->_downloadedVersion, self->_version))//(self->_downloadedVersion != self->_version)
         {
             if (! self->downLoad()) break;
             
