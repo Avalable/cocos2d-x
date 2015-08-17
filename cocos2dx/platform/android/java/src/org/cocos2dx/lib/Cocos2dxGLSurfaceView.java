@@ -303,7 +303,7 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 						Cocos2dxGLSurfaceView.this.mCocos2dxRenderer.handleKeyDown(pKeyCode);
 					}
 				});
-				//return true; //commented so event reaches Cheetah Activity.
+				return true; //commented so event reaches Cheetah Activity.
 			default:
 				return super.onKeyDown(pKeyCode, pKeyEvent);
 		}
