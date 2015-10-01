@@ -440,11 +440,16 @@ if (*value != '{') {
         return value ? value->valueint : defaultValue;
     }
 
+    bool Json_getBool(Json *value, const char *name, bool defaultValue)
+    {
+        return (bool)Json_getInt(value, name, (int)defaultValue);
+    }
+
     Json *Json_getItemAt (Json *array, int item) {
-        Json *c = array->child;
-        while (c && item > 0)
-            item--, c = c->next;
-        return c;
+    Json *c = array->child;
+    while (c && item > 0)
+        item--, c = c->next;
+    return c;
     }
 
 }} // namespace cocos2d { namespace extension {

@@ -73,7 +73,7 @@ namespace cocos2d { namespace extension {
     const char* Json_getString (Json* json, const char* name, const char* defaultValue);
     float Json_getFloat (Json* json, const char* name, float defaultValue);
     int Json_getInt (Json* json, const char* name, int defaultValue);
-
+    bool Json_getBool(Json *value, const char *name, bool defaultValue);
 
     /* Returns the number of items in an array (or object). */
     inline int Json_getSize (Json* json) { return json->size; }
