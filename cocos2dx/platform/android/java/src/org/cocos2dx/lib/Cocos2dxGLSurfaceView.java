@@ -25,6 +25,7 @@ package org.cocos2dx.lib;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -75,6 +76,11 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 	protected void initView() {
 		this.setEGLContextClientVersion(2);
 		this.setFocusableInTouchMode(true);
+		
+		if (Build.VERSION.SDK_INT > 10)
+        {
+            this.setPreserveEGLContextOnPause(true);
+        }
 
 		Cocos2dxGLSurfaceView.mCocos2dxGLSurfaceView = this;
 		Cocos2dxGLSurfaceView.sCocos2dxTextInputWraper = new Cocos2dxTextInputWraper(this);
