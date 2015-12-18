@@ -6,7 +6,6 @@ INCLUDES += \
 			-I../../extensions/CCBReader \
 			-I../../extensions/GUI/CCControlExtension \
 			-I../../extensions/GUI/CCControlExtension \
-			-I../../external/chipmunk/include/chipmunk \
 			-I../../extensions/network \
             -I../../extensions/Components \
 
