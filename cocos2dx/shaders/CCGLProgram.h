@@ -126,6 +126,7 @@ public:
      * @lua NA
      */
     bool initWithVertexShaderFilename(const char* vShaderFilename, const char* fShaderFilename);
+    bool initWithVertexShaderFilename(const char* vShaderFilename, const char* fShaderFilename, const char* dir);
     /**  It will add a new attribute to the shader 
      * @lua NA
      */

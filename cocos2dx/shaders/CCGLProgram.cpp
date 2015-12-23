@@ -163,6 +163,14 @@ bool CCGLProgram::initWithPrecompiledProgramByteArray(const GLchar* vShaderByteA
 }
 #endif
 
+bool CCGLProgram::initWithVertexShaderFilename(const char* vShaderFilename, const char* fShaderFilename, const char* dir)
+{
+    const GLchar * vertexSource = (GLchar*) CCString::createWithContentsOfFile(CCFileUtils::sharedFileUtils()->fullPathFromRelativeFile(vShaderFilename, dir))->getCString();
+    const GLchar * fragmentSource = (GLchar*) CCString::createWithContentsOfFile(CCFileUtils::sharedFileUtils()->fullPathFromRelativeFile(fShaderFilename, dir))->getCString();
+
+    return initWithVertexShaderByteArray(vertexSource, fragmentSource);
+}
+
 bool CCGLProgram::initWithVertexShaderFilename(const char* vShaderFilename, const char* fShaderFilename)
 {
     const GLchar * vertexSource = (GLchar*) CCString::createWithContentsOfFile(CCFileUtils::sharedFileUtils()->fullPathForFilename(vShaderFilename).c_str())->getCString();
