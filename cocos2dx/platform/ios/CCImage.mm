@@ -331,13 +331,13 @@ static bool _initWithString(const char * pText, cocos2d::CCImage::ETextAlign eAl
                                 : UITextAlignmentLeft);
 
         
-        // take care of stroke if needed
-        if ( pInfo->hasStroke )
-        {
-            CGContextSetTextDrawingMode(context, kCGTextFillStroke);
-            CGContextSetRGBStrokeColor(context, pInfo->strokeColorR, pInfo->strokeColorG, pInfo->strokeColorB, 1);
-            CGContextSetLineWidth(context, pInfo->strokeSize);
-        }
+//        // take care of stroke if needed
+//        if ( pInfo->hasStroke )
+//        {
+//            CGContextSetTextDrawingMode(context, kCGTextFillStroke);
+//            CGContextSetRGBStrokeColor(context, 0, 0, 0, 1);
+//            CGContextSetLineWidth(context, pInfo->strokeSize);
+//        }
         
         // take care of shadow if needed
         if ( pInfo->hasShadow )
@@ -390,12 +390,22 @@ static bool _initWithString(const char * pText, cocos2d::CCImage::ETextAlign eAl
         {
             textOrigingY = startH - shadowStrokePaddingY;
         }
-        
-        
+
         // actually draw the text in the context
 		// XXX: ios7 casting
         [str drawInRect:CGRectMake(textOriginX, textOrigingY, textWidth, textHeight) withFont:font lineBreakMode:NSLineBreakByWordWrapping alignment:(NSTextAlignment)align];
-        
+
+        //New Code Start
+        if(pInfo->hasStroke)
+        {
+            CGContextSetTextDrawingMode(context, kCGTextStroke);
+            CGContextSetRGBFillColor(context, pInfo->strokeColorR, pInfo->strokeColorG, pInfo->strokeColorB, 1);
+            CGContextSetLineWidth(context, pInfo->strokeSize);
+
+            [str drawInRect:CGRectMake(textOriginX, textOrigingY, textWidth, textHeight) withFont:font
+              lineBreakMode:NSLineBreakByWordWrapping alignment:(NSTextAlignment)align];
+        }
+
         // pop the context
         UIGraphicsPopContext();
         
