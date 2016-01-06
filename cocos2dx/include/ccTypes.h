@@ -341,10 +341,10 @@ typedef struct _ccBlendFunc
 static const ccBlendFunc kCCBlendFuncDisable = {GL_ONE, GL_ZERO};
 static const ccBlendFunc kCCBlendFuncAdditive = {GL_SRC_ALPHA, GL_ONE};
 static const ccBlendFunc kCCBlendFuncDefault = {GL_ONE, GL_ONE_MINUS_SRC_ALPHA};
-const const ccBlendFunc kCCBlendFuncAlphaPremultiplied = {GL_ONE, GL_ONE_MINUS_SRC_ALPHA};
-const const ccBlendFunc kCCBlendFuncAlphaNonPremultiplied = {GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA};
+static const ccBlendFunc kCCBlendFuncAlphaPremultiplied = {GL_ONE, GL_ONE_MINUS_SRC_ALPHA};
+static const ccBlendFunc kCCBlendFuncAlphaNonPremultiplied = {GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA};
 
-    // XXX: If any of these enums are edited and/or reordered, update CCTexture2D.m
+// XXX: If any of these enums are edited and/or reordered, update CCTexture2D.m
 //! Vertical text alignment type
 typedef enum
 {

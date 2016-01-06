@@ -141,17 +141,20 @@ tilemap_parallax_nodes/CCTMXXMLParser.cpp \
 tilemap_parallax_nodes/CCTileMapAtlas.cpp \
 touch_dispatcher/CCTouchDispatcher.cpp \
 touch_dispatcher/CCTouchHandler.cpp \
-touch_dispatcher/CCTouch.cpp
+touch_dispatcher/CCTouch.cpp \
+$(LOCAL_PATH)/../external/freetype2/include/android/freetype2/prebuilt/android/$(TARGET_ARCH_ABI)/libfreetype.a
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH) \
                     $(LOCAL_PATH)/include \
                     $(LOCAL_PATH)/kazmath/include \
-                    $(LOCAL_PATH)/platform/android
+                    $(LOCAL_PATH)/platform/android# \
+                    #$(LOCAL_PATH)/../external/freetype2/include/android/freetype2
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH) \
                     $(LOCAL_PATH)/include \
                     $(LOCAL_PATH)/kazmath/include \
-                    $(LOCAL_PATH)/platform/android
+                    $(LOCAL_PATH)/platform/android# \
+                    #$(LOCAL_PATH)/../external/freetype2/include/android/freetype2
 
 LOCAL_LDLIBS := -lGLESv2 \
                 -llog \
@@ -166,6 +169,7 @@ LOCAL_WHOLE_STATIC_LIBRARIES += cocos_jpeg_static
 LOCAL_WHOLE_STATIC_LIBRARIES += cocos_libxml2_static
 LOCAL_WHOLE_STATIC_LIBRARIES += cocos_libtiff_static
 LOCAL_WHOLE_STATIC_LIBRARIES += cocos_libwebp_static
+LOCAL_WHOLE_STATIC_LIBRARIES += cocos_freetype2_static
 
 # define the macro to compile through support/zip_support/ioapi.c
 LOCAL_CFLAGS := -Wno-psabi -DUSE_FILE32API
@@ -178,3 +182,4 @@ $(call import-module,libjpeg)
 $(call import-module,libpng)
 $(call import-module,libtiff)
 $(call import-module,libwebp)
+$(call import-module, freetype2)
