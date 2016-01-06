@@ -71,6 +71,12 @@ enum {
 #define kCCShader_PositionLengthTexureColor         "ShaderPositionLengthTextureColor"
 #define kCCShader_ControlSwitch                     "Shader_ControlSwitch"
 
+#define SHADER_NAME_LABEL_DISTANCEFIELD_NORMAL      "ShaderLabelDFNormal"
+#define SHADER_NAME_LABEL_DISTANCEFIELD_GLOW        "ShaderLabelDFGlow"
+#define SHADER_NAME_LABEL_NORMAL                    "ShaderLabelNormal"
+#define SHADER_NAME_LABEL_OUTLINE                   "ShaderLabelOutline"
+#define SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP   "ShaderPositionTextureColor_noMVP"
+
 // uniform names
 #define kCCUniformPMatrix_s				"CC_PMatrix"
 #define kCCUniformMVMatrix_s			"CC_MVMatrix"

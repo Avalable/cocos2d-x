@@ -511,7 +511,7 @@ public:
     bool getVisible();
     
 protected:
-    void updateColor(void);
+    virtual void updateColor(void);
     virtual void setTextureCoords(CCRect rect);
     virtual void updateBlendFunc(void);
     virtual void setReorderChildDirtyRecursively(void);

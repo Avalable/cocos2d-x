@@ -60,6 +60,14 @@ extern CC_DLL const GLchar * ccPositionColorLengthTexture_vert;
 
 extern CC_DLL const GLchar * ccExSwitchMask_frag;
 
+extern CC_DLL const GLchar * ccLabel_vert;
+extern CC_DLL const GLchar * ccLabelDistanceFieldNormal_frag;
+extern CC_DLL const GLchar * ccLabelDistanceFieldGlow_frag;
+extern CC_DLL const GLchar * ccLabelNormal_frag;
+extern CC_DLL const GLchar * ccLabelOutline_frag;
+extern CC_DLL const GLchar * ccPositionTextureColor_noMVP_vert;
+extern CC_DLL const GLchar * ccPositionTextureColor_noMVP_frag;
+
 // end of shaders group
 /// @}
 

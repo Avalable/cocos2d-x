@@ -258,7 +258,7 @@ To enable set it to a value different than 0. Disabled by default.
  To enable set it to a value different than 0. Disabled by default.
  */
 #ifndef CC_ENABLE_PROFILERS
-#define CC_ENABLE_PROFILERS 0
+#define CC_ENABLE_PROFILERS 1
 #endif
 
 /** Enable Lua engine debug log */

@@ -90,6 +90,7 @@ CCTexture2D::~CCTexture2D()
 }
 
 CCTexture2DPixelFormat CCTexture2D::getPixelFormat()
+
 {
     return m_ePixelFormat;
 }
@@ -942,5 +943,46 @@ unsigned int CCTexture2D::bitsPerPixelForFormat()
 	return this->bitsPerPixelForFormat(m_ePixelFormat);
 }
 
+bool CCTexture2D::updateWithData(const void *data,int offsetX,int offsetY,int width,int height)
+{
+    if (m_uName)
+    {
+        ccGLBindTexture2D(m_uName);
+
+        switch(m_ePixelFormat)
+        {
+            case kCCTexture2DPixelFormat_RGBA8888:
+                glTexSubImage2D(GL_TEXTURE_2D, 0, offsetX, offsetY, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+                break;
+            case kCCTexture2DPixelFormat_RGB888:
+                glTexSubImage2D(GL_TEXTURE_2D, 0, offsetX, offsetY, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
+                break;
+            case kCCTexture2DPixelFormat_RGBA4444:
+                glTexSubImage2D(GL_TEXTURE_2D, 0, offsetX, offsetY, width, height, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, data);
+                break;
+            case kCCTexture2DPixelFormat_RGB5A1:
+                glTexSubImage2D(GL_TEXTURE_2D, 0, offsetX, offsetY, width, height, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, data);
+                break;
+            case kCCTexture2DPixelFormat_RGB565:
+                glTexSubImage2D(GL_TEXTURE_2D, 0, offsetX, offsetY, width, height, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, data);
+                break;
+            case kCCTexture2DPixelFormat_AI88:
+                glTexSubImage2D(GL_TEXTURE_2D, 0, offsetX, offsetY, width, height, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, data);
+                break;
+            case kCCTexture2DPixelFormat_A8:
+                glTexSubImage2D(GL_TEXTURE_2D, 0, offsetX, offsetY, width, height, GL_ALPHA, GL_UNSIGNED_BYTE, data);
+                break;
+            case kCCTexture2DPixelFormat_I8:
+                glTexSubImage2D(GL_TEXTURE_2D, 0, offsetX, offsetY, width, height, GL_LUMINANCE, GL_UNSIGNED_BYTE, data);
+                break;
+            default:
+                CCAssert(0, "NSInternalInconsistencyException");
+
+        }
+
+        return true;
+    }
+    return false;
+}
 
 NS_CC_END

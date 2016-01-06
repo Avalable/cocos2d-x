@@ -88,6 +88,12 @@ typedef struct _ccColor4B
     GLubyte g;
     GLubyte b;
     GLubyte a;
+
+    bool equals(const _ccColor4B& right) const
+    {
+        return (r == right.r && g == right.g && b == right.b && a == right.a);
+    }
+
 } ccColor4B;
 //! helper macro that creates an ccColor4B type
 static inline ccColor4B
@@ -97,7 +103,6 @@ ccc4(const GLubyte r, const GLubyte g, const GLubyte b, const GLubyte o)
     return c;
 }
 
-
 /** RGBA color composed of 4 floats
 @since v0.8
 */
@@ -106,6 +111,12 @@ typedef struct _ccColor4F {
     GLfloat g;
     GLfloat b;
     GLfloat a;
+
+    bool equals(const _ccColor4F& right) const
+    {
+        return (r == right.r && g == right.g && b == right.b && a == right.a);
+    }
+
 } ccColor4F;
 
 
@@ -141,13 +152,23 @@ static inline ccColor4B ccc4BFromccc4F(ccColor4F c)
 	return ret;
 }
 
-/** returns YES if both ccColor4F are equal. Otherwise it returns NO.
+static inline ccColor4B ccc4BFromccc3B(ccColor3B c)
+{
+    return {c.r, c.g, c.b, 255};
+}
+
+    /** returns YES if both ccColor4F are equal. Otherwise it returns NO.
  @since v0.99.1
  */
 static inline bool ccc4FEqual(ccColor4F a, ccColor4F b)
 {
     return a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a;
 }
+
+static const ccColor4F ccfBLACK= {0,0,0,1};
+static const ccColor4B ccbBLACK= {0,0,0,1};
+static const ccColor4B ccbWHITE= {255,255,255,255};
+static const ccColor4F ccfWHITE= {1.0f,1.0f,1.0f,1.0f};
 
 /** A vertex composed of 2 floats: x, y
  @since v0.8
@@ -320,8 +341,10 @@ typedef struct _ccBlendFunc
 static const ccBlendFunc kCCBlendFuncDisable = {GL_ONE, GL_ZERO};
 static const ccBlendFunc kCCBlendFuncAdditive = {GL_SRC_ALPHA, GL_ONE};
 static const ccBlendFunc kCCBlendFuncDefault = {GL_ONE, GL_ONE_MINUS_SRC_ALPHA};
+const const ccBlendFunc kCCBlendFuncAlphaPremultiplied = {GL_ONE, GL_ONE_MINUS_SRC_ALPHA};
+const const ccBlendFunc kCCBlendFuncAlphaNonPremultiplied = {GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA};
 
-// XXX: If any of these enums are edited and/or reordered, update CCTexture2D.m
+    // XXX: If any of these enums are edited and/or reordered, update CCTexture2D.m
 //! Vertical text alignment type
 typedef enum
 {

@@ -26,6 +26,9 @@ THE SOFTWARE.
 #include "ccShaders.h"
 
 NS_CC_BEGIN
+
+#define STRINGIFY(A)  #A
+
 //
 const GLchar * ccPosition_uColor_frag = 
 #include "ccShader_Position_uColor_frag.h"
@@ -73,5 +76,16 @@ const GLchar * ccPositionColorLengthTexture_frag =
 #include "ccShader_PositionColorLengthTexture_frag.h"
 const GLchar * ccPositionColorLengthTexture_vert =
 #include "ccShader_PositionColorLengthTexture_vert.h"
+
+
+// ---- cocos2d-x 3.x shaders
+#include "ccShader_Label.vert"
+#include "ccShader_Label_df.frag"
+#include "ccShader_Label_df_glow.frag"
+#include "ccShader_Label_normal.frag"
+#include "ccShader_Label_outline.frag"
+#include "ccShader_PositionTextureColor_noMVP.frag"
+#include "ccShader_PositionTextureColor_noMVP.vert"
+
 
 NS_CC_END

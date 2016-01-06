@@ -42,7 +42,13 @@ enum {
     kCCShaderType_Position_uColor,
     kCCShaderType_PositionLengthTexureColor,
     kCCShaderType_ControlSwitch,
-    
+
+    kSHADER_NAME_LABEL_DISTANCEFIELD_NORMAL,
+    kSHADER_NAME_LABEL_DISTANCEFIELD_GLOW,
+    kSHADER_NAME_LABEL_NORMAL,
+    kSHADER_NAME_LABEL_OUTLINE,
+    kSHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP,
+
     kCCShaderType_MAX,
 };
 
@@ -164,9 +170,39 @@ void CCShaderCache::loadDefaultShaders()
     
     m_pPrograms->setObject(p, kCCShader_ControlSwitch);
     p->release();
+
+    //-------
+
+    p = new CCGLProgram();
+    loadDefaultShader(p, kSHADER_NAME_LABEL_DISTANCEFIELD_NORMAL);
+
+    m_pPrograms->setObject(p, SHADER_NAME_LABEL_DISTANCEFIELD_NORMAL);
+    p->release();
+
+    p = new CCGLProgram();
+    loadDefaultShader(p, kSHADER_NAME_LABEL_DISTANCEFIELD_GLOW);
+
+    m_pPrograms->setObject(p, SHADER_NAME_LABEL_DISTANCEFIELD_GLOW);
+    p->release();
+
+    p = new CCGLProgram();
+    loadDefaultShader(p, kSHADER_NAME_LABEL_NORMAL);
+
+    m_pPrograms->setObject(p, SHADER_NAME_LABEL_NORMAL);
+    p->release();
+
+    p = new CCGLProgram();
+    loadDefaultShader(p, kSHADER_NAME_LABEL_OUTLINE);
+
+    m_pPrograms->setObject(p, SHADER_NAME_LABEL_OUTLINE);
+    p->release();
+
+    p = new CCGLProgram();
+    loadDefaultShader(p, kSHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP);
+
+    m_pPrograms->setObject(p, SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP);
+    p->release();
 }
-
-
 
 void CCShaderCache::reloadDefaultShaders()
 {
@@ -224,9 +260,6 @@ void CCShaderCache::reloadDefaultShaders()
     p->reset();
     loadDefaultShader(p, kCCShaderType_PositionLengthTexureColor);
 }
-
-
-
 
 void CCShaderCache::loadDefaultShader(CCGLProgram *p, int type)
 {
@@ -288,26 +321,58 @@ void CCShaderCache::loadDefaultShader(CCGLProgram *p, int type)
             p->addAttribute(kCCAttributeNamePosition, kCCVertexAttrib_Position);
             p->addAttribute(kCCAttributeNameTexCoord, kCCVertexAttrib_TexCoords);
             p->addAttribute(kCCAttributeNameColor, kCCVertexAttrib_Color);
-            
             break;
 
        case kCCShaderType_ControlSwitch:
             p->initWithVertexShaderByteArray(ccPositionTextureColor_vert, ccExSwitchMask_frag);
-
             p->addAttribute(kCCAttributeNamePosition, kCCVertexAttrib_Position);
             p->addAttribute(kCCAttributeNameColor, kCCVertexAttrib_Color);
             p->addAttribute(kCCAttributeNameTexCoord, kCCVertexAttrib_TexCoords);
+            break;
 
+        case kSHADER_NAME_LABEL_DISTANCEFIELD_NORMAL:
+            p->initWithVertexShaderByteArray(ccLabel_vert, ccLabelDistanceFieldNormal_frag);
+            p->addAttribute(kCCAttributeNamePosition, kCCVertexAttrib_Position);
+            p->addAttribute(kCCAttributeNameTexCoord, kCCVertexAttrib_TexCoords);
+            p->addAttribute(kCCAttributeNameColor, kCCVertexAttrib_Color);
+            break;
+
+        case kSHADER_NAME_LABEL_DISTANCEFIELD_GLOW:
+            p->initWithVertexShaderByteArray(ccLabel_vert, ccLabelDistanceFieldGlow_frag);
+            p->addAttribute(kCCAttributeNamePosition, kCCVertexAttrib_Position);
+            p->addAttribute(kCCAttributeNameTexCoord, kCCVertexAttrib_TexCoords);
+            p->addAttribute(kCCAttributeNameColor, kCCVertexAttrib_Color);
+            break;
+
+        case kSHADER_NAME_LABEL_NORMAL:
+            p->initWithVertexShaderByteArray(ccLabel_vert, ccLabelNormal_frag);
+            p->addAttribute(kCCAttributeNamePosition, kCCVertexAttrib_Position);
+            p->addAttribute(kCCAttributeNameTexCoord, kCCVertexAttrib_TexCoords);
+            p->addAttribute(kCCAttributeNameColor, kCCVertexAttrib_Color);
+            break;
+
+        case kSHADER_NAME_LABEL_OUTLINE:
+            p->initWithVertexShaderByteArray(ccLabel_vert, ccLabelOutline_frag);
+            p->addAttribute(kCCAttributeNamePosition, kCCVertexAttrib_Position);
+            p->addAttribute(kCCAttributeNameTexCoord, kCCVertexAttrib_TexCoords);
+            p->addAttribute(kCCAttributeNameColor, kCCVertexAttrib_Color);
+            break;
+
+        case kSHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP:
+            p->initWithVertexShaderByteArray(ccPositionTextureColor_noMVP_vert, ccPositionTextureColor_noMVP_frag);
+            p->addAttribute(kCCAttributeNamePosition, kCCVertexAttrib_Position);
+            p->addAttribute(kCCAttributeNameTexCoord, kCCVertexAttrib_TexCoords);
+            p->addAttribute(kCCAttributeNameColor, kCCVertexAttrib_Color);
             break;
 
         default:
             CCLOG("cocos2d: %s:%d, error shader type", __FUNCTION__, __LINE__);
             return;
     }
-    
+
     p->link();
     p->updateUniforms();
-    
+
     CHECK_GL_ERROR_DEBUG();
 }
 

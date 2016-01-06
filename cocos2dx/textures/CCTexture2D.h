@@ -227,6 +227,8 @@ public:
      */
     unsigned int bitsPerPixelForFormat(CCTexture2DPixelFormat format);
 
+    bool updateWithData(const void *data,int offsetX,int offsetY,int width,int height);
+
     /** sets the default pixel format for UIImagescontains alpha channel.
     If the UIImage contains alpha channel, then the options are:
     - generate 32-bit textures: kCCTexture2DPixelFormat_RGBA8888 (default one)
