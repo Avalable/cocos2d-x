@@ -41,7 +41,6 @@
 #include <string.h> /* strcasecmp (4.4BSD - compatibility), _stricmp (_WIN32) */
 #include <spine/extension.h>
 #include "JsonAllocator.h"
-#include <ccMacros.h>
 
 #ifndef SPINE_JSON_DEBUG
 /* Define this to do extra NULL and expected-character checking */
@@ -424,7 +423,6 @@ if (*value != '{') {
 
     const char *Json_getString(Json *object, const char *name, const char *defaultValue)
     {
-        CCAssert(defaultValue, "Default string value can't be NULL!");
         object = Json_getItem(object, name);
         if (object && object->valuestring) return object->valuestring;
         return defaultValue;
