@@ -138,7 +138,7 @@ public:
     
     /**
      * This method is called when an edit box gains focus after keyboard is shown.
-     * @param editBox The edit box object that generated the event.
+     * @param editBox The edit box object that generated the event.callc
      */
     virtual void editBoxEditingDidBegin(CCEditBox* editBox) {};
     

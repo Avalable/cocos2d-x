@@ -13,6 +13,7 @@
 #define  CLASS_NAME "org/cocos2dx/lib/Cocos2dxHelper"
 
 static EditTextCallback s_pfEditTextCallback = NULL;
+static EditTextCallback s_pfEditTextChangedCallback = NULL;
 static void* s_ctx = NULL;
 
 using namespace cocos2d;
@@ -45,6 +46,24 @@ extern "C" {
         }
     }
 
+    JNIEXPORT void JNICALL Java_org_cocos2dx_lib_Cocos2dxHelper_nativeSetEditTextDialogChanged(JNIEnv * env, jobject obj, jbyteArray text) {
+		jsize  size = env->GetArrayLength(text);
+
+		if (size > 0) {
+			jbyte * data = (jbyte*)env->GetByteArrayElements(text, 0);
+			char* pBuf = (char*)malloc(size+1);
+			if (pBuf != NULL) {
+				memcpy(pBuf, data, size);
+				pBuf[size] = '\0';
+				// pass data to edittext's delegate
+				if (s_pfEditTextChangedCallback) s_pfEditTextChangedCallback(pBuf, s_ctx);
+				free(pBuf);
+			}
+			env->ReleaseByteArrayElements(text, data, 0);
+		} else {
+			if (s_pfEditTextChangedCallback) s_pfEditTextChangedCallback("", s_ctx);
+		}
+	}
 }
 
 const char * getApkPath() {
@@ -75,12 +94,13 @@ void showDialogJNI(const char * pszMsg, const char * pszTitle) {
     }
 }
 
-void showEditTextDialogJNI(const char* pszTitle, const char* pszMessage, int nInputMode, int nInputFlag, int nReturnType, int nMaxLength, EditTextCallback pfEditTextCallback, void* ctx) {
+void showEditTextDialogJNI(const char* pszTitle, const char* pszMessage, int nInputMode, int nInputFlag, int nReturnType, int nMaxLength, EditTextCallback pfEditTextCallback, EditTextCallback pfEditTextChangedCallback, void* ctx) {
     if (pszMessage == NULL) {
         return;
     }
 
     s_pfEditTextCallback = pfEditTextCallback;
+    s_pfEditTextChangedCallback = pfEditTextChangedCallback;
     s_ctx = ctx;
 
     JniMethodInfo t;

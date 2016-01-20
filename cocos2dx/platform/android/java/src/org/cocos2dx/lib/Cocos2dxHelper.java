@@ -97,6 +97,7 @@ public class Cocos2dxHelper {
 	private static native void nativeSetApkPath(final String pApkPath);
 
 	private static native void nativeSetEditTextDialogResult(final byte[] pBytes);
+	private static native void nativeSetEditTextDialogChanged(final byte[] pBytes);
 
 	public static String getCocos2dxPackageName() {
 		return Cocos2dxHelper.sPackageName;
@@ -250,6 +251,21 @@ public class Cocos2dxHelper {
 				@Override
 				public void run() {
 					Cocos2dxHelper.nativeSetEditTextDialogResult(bytesUTF8);
+				}
+			});
+		} catch (UnsupportedEncodingException pUnsupportedEncodingException) {
+			/* Nothing. */
+		}
+	}
+	
+	public static void setEditTextDialogChanged(final String pResult) {
+		try {
+			final byte[] bytesUTF8 = pResult.getBytes("UTF8");
+
+			Cocos2dxHelper.sCocos2dxHelperListener.runOnGLThread(new Runnable() {
+				@Override
+				public void run() {
+					Cocos2dxHelper.nativeSetEditTextDialogChanged(bytesUTF8);
 				}
 			});
 		} catch (UnsupportedEncodingException pUnsupportedEncodingException) {

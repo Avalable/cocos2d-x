@@ -331,6 +331,8 @@ public class Cocos2dxEditBoxDialog extends Dialog {
 		                s.replace(i, i+1,"");               
 		             }
 		         }
+		         
+		         Cocos2dxHelper.setEditTextDialogChanged(Cocos2dxEditBoxDialog.this.mInputEditText.getText().toString());
 		    }
 	   });		
 	}

@@ -266,6 +266,24 @@ static void editBoxCallbackFunc(const char* pText, void* ctx)
     }
 }
 
+static void editBoxChangedCallbackFunc(const char* pText, void* ctx)
+{
+	CCEditBoxImplAndroid* thiz = (CCEditBoxImplAndroid*)ctx;
+	thiz->setText(pText);
+
+	if(thiz->getDelegate() != NULL)
+	{
+		thiz->getDelegate()->editBoxTextChanged(thiz->getCCEditBox(), thiz->getText());
+	}
+
+	CCEditBox* pEditBox = thiz->getCCEditBox();
+	if (NULL != pEditBox && 0 != pEditBox->getScriptEditBoxHandler())
+	{
+		cocos2d::CCScriptEngineProtocol* pEngine = cocos2d::CCScriptEngineManager::sharedManager()->getScriptEngine();
+		pEngine->executeEvent(pEditBox->getScriptEditBoxHandler(), "changed",pEditBox);
+	}
+}
+
 void CCEditBoxImplAndroid::openKeyboard()
 {
     if (m_pDelegate != NULL)
@@ -286,6 +304,7 @@ void CCEditBoxImplAndroid::openKeyboard()
 						  m_eKeyboardReturnType,
 						  m_nMaxLength,
 						  editBoxCallbackFunc,
+						  editBoxChangedCallbackFunc,
 						  (void*)this  );
 	
 }
