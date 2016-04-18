@@ -27,6 +27,10 @@ extern "C" {
         g_apkPath = JniHelper::jstring2string(apkPath);
     }
 
+    JNIEXPORT void JNICALL Java_org_cocos2dx_lib_Cocos2dxHelper_nativeSetContext(JNIEnv*  env, jobject thiz, jobject context) {
+        JniHelper::setClassLoaderFrom(context);
+    }
+
     JNIEXPORT void JNICALL Java_org_cocos2dx_lib_Cocos2dxHelper_nativeSetEditTextDialogResult(JNIEnv * env, jobject obj, jbyteArray text) {
         jsize  size = env->GetArrayLength(text);
 

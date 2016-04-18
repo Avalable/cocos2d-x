@@ -108,6 +108,7 @@ CC_DLL unsigned short* cc_utf8_to_utf16(const char* utf8, int* outUTF16Character
  **/
 CC_DLL char* cc_utf16_to_utf8(const unsigned short* utf16, int* outUTF8CharacterCount = NULL);
 
+bool convertUTF16ToUTF8String(const std::u16string& utf16, std::string &Out);
 
 NS_CC_END
 

@@ -1211,5 +1211,47 @@ char * cc_utf16_to_utf8(const unsigned short* utf16, int* outUTF8CharacterCount 
     return ret;
 }
 
+bool convertUTF16ToUTF8String(const std::u16string& utf16, std::string &Out)
+{
+    assert(Out.empty());
+
+    // Avoid OOB by returning early on empty input.
+    if (utf16.empty())
+        return true;
+
+    const UTF16 *Src = reinterpret_cast<const UTF16 *>(utf16.data());
+    const UTF16 *SrcEnd = reinterpret_cast<const UTF16 *>(utf16.data() + utf16.length());
+
+    // Byteswap if necessary.
+    std::vector<UTF16> ByteSwapped;
+    if (Src[0] == UNI_UTF16_BYTE_ORDER_MARK_SWAPPED) {
+        ByteSwapped.insert(ByteSwapped.end(), Src, SrcEnd);
+        for (size_t I = 0, E = ByteSwapped.size(); I != E; ++I)
+            ByteSwapped[I] = llvm::SwapByteOrder_16(ByteSwapped[I]);
+        Src = &ByteSwapped[0];
+        SrcEnd = &ByteSwapped[ByteSwapped.size() - 1] + 1;
+    }
+
+    // Skip the BOM for conversion.
+    if (Src[0] == UNI_UTF16_BYTE_ORDER_MARK_NATIVE)
+        Src++;
+
+    // Just allocate enough space up front.  We'll shrink it later.
+    Out.resize(utf16.length() * UNI_MAX_UTF8_BYTES_PER_CODE_POINT + 1);
+    UTF8 *Dst = reinterpret_cast<UTF8 *>(&Out[0]);
+    UTF8 *DstEnd = Dst + Out.size();
+
+    ConversionResult CR =
+            ConvertUTF16toUTF8(&Src, SrcEnd, &Dst, DstEnd, strictConversion);
+    assert(CR != targetExhausted);
+
+    if (CR != conversionOK) {
+        Out.clear();
+        return false;
+    }
+
+    Out.resize(reinterpret_cast<char *>(Dst) - &Out[0]);
+    return true;
+}
 
 NS_CC_END

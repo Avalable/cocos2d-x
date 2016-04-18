@@ -28,143 +28,47 @@ THE SOFTWARE.
 #if 1
 #define  LOG_TAG    "JniHelper"
 #define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
+#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 #else
-#define  LOGD(...) 
+#define  LOGD(...)
+#define  LOGE(...)
 #endif
 
 #define JAVAVM    cocos2d::JniHelper::getJavaVM()
 
 using namespace std;
 
+static pthread_key_t g_key;
+
 extern "C"
 {
-
-    //////////////////////////////////////////////////////////////////////////
-    // java vm helper function
-    //////////////////////////////////////////////////////////////////////////
-
-    static pthread_key_t s_threadKey;
-
-    static void detach_current_thread (void *env) {
+    static void detach_current_thread (void *env)
+    {
         JAVAVM->DetachCurrentThread();
     }
-    
-    static bool getEnv(JNIEnv **env)
+
+    jclass _getClassID(const char *className)
     {
-        bool bRet = false;
+        if (nullptr == className) {
+            return nullptr;
+        }
 
-        switch(JAVAVM->GetEnv((void**)env, JNI_VERSION_1_4))
-        {
-        case JNI_OK:
-            bRet = true;
-            break;
-        case JNI_EDETACHED:
-            pthread_key_create (&s_threadKey, detach_current_thread);
-            if (JAVAVM->AttachCurrentThread(env, 0) < 0)
-            {
-                LOGD("%s", "Failed to get the environment using AttachCurrentThread()");
-                break;
-            }
-            if (pthread_getspecific(s_threadKey) == NULL)
-                pthread_setspecific(s_threadKey, env); 
-            bRet = true;
-            break;
-        default:
-            LOGD("%s", "Failed to get the environment using GetEnv()");
-            break;
-        }      
+        JNIEnv* env = cocos2d::JniHelper::getEnv();
 
-        return bRet;
-    }
+        jstring _jstrClassName = env->NewStringUTF(className);
 
-    static jclass getClassID_(const char *className, JNIEnv *env)
-    {
-        JNIEnv *pEnv = env;
-        jclass ret = 0;
+        jclass _clazz = (jclass) env->CallObjectMethod(cocos2d::JniHelper::classloader,
+                cocos2d::JniHelper::loadclassMethod_methodID,
+                _jstrClassName);
 
-        do 
-        {
-            if (! pEnv)
-            {
-                if (! getEnv(&pEnv))
-                {
-                    break;
-                }
-            }
-            
-            ret = pEnv->FindClass(className);
-            if (! ret)
-            {
-                 LOGD("Failed to find class of %s", className);
-                break;
-            }
-        } while (0);
+        if (nullptr == _clazz) {
+            LOGE("Classloader failed to find class of %s", className);
+            env->ExceptionClear();
+        }
 
-        return ret;
-    }
+        env->DeleteLocalRef(_jstrClassName);
 
-    static bool getStaticMethodInfo_(cocos2d::JniMethodInfo &methodinfo, const char *className, const char *methodName, const char *paramCode)
-    {
-        jmethodID methodID = 0;
-        JNIEnv *pEnv = 0;
-        bool bRet = false;
-
-        do 
-        {
-            if (! getEnv(&pEnv))
-            {
-                break;
-            }
-
-            jclass classID = getClassID_(className, pEnv);
-
-            methodID = pEnv->GetStaticMethodID(classID, methodName, paramCode);
-            if (! methodID)
-            {
-                LOGD("Failed to find static method id of %s", methodName);
-                break;
-            }
-
-            methodinfo.classID = classID;
-            methodinfo.env = pEnv;
-            methodinfo.methodID = methodID;
-
-            bRet = true;
-        } while (0);
-
-        return bRet;
-    }
-
-    static bool getMethodInfo_(cocos2d::JniMethodInfo &methodinfo, const char *className, const char *methodName, const char *paramCode)
-    {
-        jmethodID methodID = 0;
-        JNIEnv *pEnv = 0;
-        bool bRet = false;
-
-        do 
-        {
-            if (! getEnv(&pEnv))
-            {
-                break;
-            }
-
-            jclass classID = getClassID_(className, pEnv);
-
-            methodID = pEnv->GetMethodID(classID, methodName, paramCode);
-            if (! methodID)
-            {
-                LOGD("Failed to find method id of %s", methodName);
-                break;
-            }
-
-            methodinfo.classID = classID;
-            methodinfo.env = pEnv;
-            methodinfo.methodID = methodID;
-
-            bRet = true;
-        } while (0);
-
-        return bRet;
+        return _clazz;
     }
 
     static string jstring2string_(jstring jstr)
@@ -173,23 +77,26 @@ extern "C"
         {
             return "";
         }
-        
-        JNIEnv *env = 0;
 
-        if (! getEnv(&env))
+        JNIEnv* pEnv = cocos2d::JniHelper::getEnv();
+
+        if (!pEnv)
         {
             return 0;
         }
 
-        const char* chars = env->GetStringUTFChars(jstr, NULL);
+        const char* chars = pEnv->GetStringUTFChars(jstr, NULL);
         string ret(chars);
-        env->ReleaseStringUTFChars(jstr, chars);
+        pEnv->ReleaseStringUTFChars(jstr, chars);
 
         return ret;
     }
 }
 
 NS_CC_BEGIN
+
+jmethodID JniHelper::loadclassMethod_methodID = nullptr;
+jobject JniHelper::classloader = nullptr;
 
 JavaVM* JniHelper::m_psJavaVM = NULL;
 
@@ -198,24 +105,208 @@ JavaVM* JniHelper::getJavaVM()
     return m_psJavaVM;
 }
 
+bool JniHelper::setClassLoaderFrom(jobject activityinstance) {
+
+//    LOGD("JniHelper::setClassLoaderFrom");
+
+    JniMethodInfo _getclassloaderMethod;
+    if (!JniHelper::getMethodInfo_DefaultClassLoader(_getclassloaderMethod,
+            "android/content/Context",
+            "getClassLoader",
+            "()Ljava/lang/ClassLoader;")) {
+        return false;
+    }
+
+    jobject _c = cocos2d::JniHelper::getEnv()->CallObjectMethod(activityinstance,
+            _getclassloaderMethod.methodID);
+
+    if (nullptr == _c) {
+        return false;
+    }
+
+    JniMethodInfo _m;
+    if (!JniHelper::getMethodInfo_DefaultClassLoader(_m,
+            "java/lang/ClassLoader",
+            "loadClass",
+            "(Ljava/lang/String;)Ljava/lang/Class;")) {
+        return false;
+    }
+
+    JniHelper::classloader = cocos2d::JniHelper::getEnv()->NewGlobalRef(_c);
+    JniHelper::loadclassMethod_methodID = _m.methodID;
+
+//    LOGD("JniHelper::setClassLoaderFrom PASS");
+
+    return true;
+}
+
+bool JniHelper::getStaticMethodInfo(JniMethodInfo &methodinfo,
+        const char *className,
+        const char *methodName,
+        const char *paramCode) {
+    if ((nullptr == className) ||
+            (nullptr == methodName) ||
+            (nullptr == paramCode)) {
+        return false;
+    }
+
+    JNIEnv *env = JniHelper::getEnv();
+    if (!env) {
+        LOGE("Failed to get JNIEnv");
+        return false;
+    }
+
+    jclass classID = _getClassID(className);
+    if (! classID) {
+        LOGE("Failed to find class %s", className);
+        env->ExceptionClear();
+        return false;
+    }
+
+    jmethodID methodID = env->GetStaticMethodID(classID, methodName, paramCode);
+    if (! methodID) {
+        LOGE("Failed to find static method id of %s", methodName);
+        env->ExceptionClear();
+        return false;
+    }
+
+    methodinfo.classID = classID;
+    methodinfo.env = env;
+    methodinfo.methodID = methodID;
+    return true;
+}
+
+bool JniHelper::getMethodInfo_DefaultClassLoader(JniMethodInfo &methodinfo,
+        const char *className,
+        const char *methodName,
+        const char *paramCode) {
+    if ((nullptr == className) ||
+            (nullptr == methodName) ||
+            (nullptr == paramCode)) {
+        return false;
+    }
+
+    JNIEnv *env = JniHelper::getEnv();
+    if (!env) {
+        return false;
+    }
+
+    jclass classID = env->FindClass(className);
+    if (! classID) {
+        LOGE("Failed to find class %s", className);
+        env->ExceptionClear();
+        return false;
+    }
+
+    jmethodID methodID = env->GetMethodID(classID, methodName, paramCode);
+    if (! methodID) {
+        LOGE("Failed to find method id of %s", methodName);
+        env->ExceptionClear();
+        return false;
+    }
+
+    methodinfo.classID = classID;
+    methodinfo.env = env;
+    methodinfo.methodID = methodID;
+
+    return true;
+}
+
+bool JniHelper::getMethodInfo(JniMethodInfo &methodinfo,
+        const char *className,
+        const char *methodName,
+        const char *paramCode) {
+    if ((nullptr == className) ||
+            (nullptr == methodName) ||
+            (nullptr == paramCode)) {
+        return false;
+    }
+
+    JNIEnv *env = JniHelper::getEnv();
+    if (!env) {
+        return false;
+    }
+
+    jclass classID = _getClassID(className);
+    if (! classID) {
+        LOGE("Failed to find class %s", className);
+        env->ExceptionClear();
+        return false;
+    }
+
+    jmethodID methodID = env->GetMethodID(classID, methodName, paramCode);
+    if (! methodID) {
+        LOGE("Failed to find method id of %s", methodName);
+        env->ExceptionClear();
+        return false;
+    }
+
+    methodinfo.classID = classID;
+    methodinfo.env = env;
+    methodinfo.methodID = methodID;
+
+    return true;
+}
+
+JNIEnv* JniHelper::cacheEnv(JavaVM* jvm)
+{
+    JNIEnv *_env = nullptr;
+    // get jni environment
+    jint ret = jvm->GetEnv((void **) &_env, JNI_VERSION_1_4);
+
+    switch (ret) {
+        case JNI_OK :
+            // Success!
+//            LOGD("JniHelper::cacheEnv: JNI_OK");
+            pthread_setspecific(g_key, _env);
+            return _env;
+
+        case JNI_EDETACHED :
+            // Thread not attached
+//            LOGD("JniHelper::cacheEnv: JNI_EDETACHED");
+            if (jvm->AttachCurrentThread(&_env, nullptr) < 0) {
+                LOGE("Failed to get the environment using AttachCurrentThread()");
+
+                return nullptr;
+            } else {
+                // Success : Attached and obtained JNIEnv!
+                pthread_setspecific(g_key, _env);
+                return _env;
+            }
+
+        case JNI_EVERSION :
+            // Cannot recover from this error
+            LOGE("JNI interface version 1.4 not supported");
+        default :
+            LOGE("Failed to get the environment using GetEnv()");
+            return nullptr;
+    }
+}
+
+JNIEnv* JniHelper::getEnv()
+{
+    JNIEnv *_env = (JNIEnv *) pthread_getspecific(g_key);
+
+//    LOGD("JniHelper::getEnv: %p", _env);
+
+    if (_env == nullptr)
+        _env = JniHelper::cacheEnv(m_psJavaVM);
+
+    return _env;
+}
+
 void JniHelper::setJavaVM(JavaVM *javaVM)
 {
+    pthread_t thisthread = pthread_self();
+//    LOGD("JniHelper::setJavaVM(%p), pthread_self() = %ld", javaVM, thisthread);
     m_psJavaVM = javaVM;
+
+    pthread_key_create(&g_key, detach_current_thread);
 }
 
 jclass JniHelper::getClassID(const char *className, JNIEnv *env)
 {
-    return getClassID_(className, env);
-}
-
-bool JniHelper::getStaticMethodInfo(JniMethodInfo &methodinfo, const char *className, const char *methodName, const char *paramCode)
-{
-    return getStaticMethodInfo_(methodinfo, className, methodName, paramCode);
-}
-
-bool JniHelper::getMethodInfo(JniMethodInfo &methodinfo, const char *className, const char *methodName, const char *paramCode)
-{
-    return getMethodInfo_(methodinfo, className, methodName, paramCode);
+    return _getClassID(className);
 }
 
 string JniHelper::jstring2string(jstring str)
@@ -225,14 +316,14 @@ string JniHelper::jstring2string(jstring str)
 
 long JniHelper::getNativeHeapAllocatedSize()
 {
-    JNIEnv *env = 0;
+    JNIEnv* pEnv = cocos2d::JniHelper::getEnv();
 
-    if (! getEnv(&env))
+    if (!pEnv)
     {
         return -1L;
     }
 
-    jclass clazz = getClassID("android/os/Debug", env);
+    jclass clazz = getClassID("android/os/Debug", pEnv);
     if (clazz)
     {
         JniMethodInfo methodInfo;
@@ -248,14 +339,14 @@ long JniHelper::getNativeHeapAllocatedSize()
 
 long JniHelper::getNativeHeapSize()
 {
-    JNIEnv *env = 0;
+    JNIEnv* pEnv = cocos2d::JniHelper::getEnv();
 
-    if (! getEnv(&env))
+    if (!pEnv)
     {
         return -1L;
     }
 
-    jclass clazz = getClassID("android/os/Debug", env);
+    jclass clazz = getClassID("android/os/Debug", pEnv);
     if (clazz)
     {
         JniMethodInfo methodInfo;
@@ -271,53 +362,53 @@ long JniHelper::getNativeHeapSize()
 
 jobjectArray JniHelper::makeStringArray(jsize count, std::string array[])
 {
-    JNIEnv *env = 0;
+    JNIEnv* pEnv = cocos2d::JniHelper::getEnv();
 
-    if (! getEnv(&env))
+    if (!pEnv)
     {
         return NULL;
     }
 
-    jclass stringClass = env->FindClass("java/lang/String");
-    jobjectArray row = env->NewObjectArray(count, stringClass, 0);
+    jclass stringClass = pEnv->FindClass("java/lang/String");
+    jobjectArray row = pEnv->NewObjectArray(count, stringClass, 0);
     jsize i;
 
     for (i = 0; i < count; ++i) {
-        env->SetObjectArrayElement(row, i, env->NewStringUTF(array[i].c_str()));
+        pEnv->SetObjectArrayElement(row, i, pEnv->NewStringUTF(array[i].c_str()));
     }
     return row;
 }
 
 jobjectArray JniHelper::makeStringArray(const std::vector<std::string>& array)
 {
-    JNIEnv *env = 0;
+    JNIEnv* pEnv = cocos2d::JniHelper::getEnv();
 
-    if (! getEnv(&env))
+    if (!pEnv)
     {
         return NULL;
     }
 
-    jclass stringClass = env->FindClass("java/lang/String");
-    jobjectArray row = env->NewObjectArray(array.size(), stringClass, 0);
+    jclass stringClass = pEnv->FindClass("java/lang/String");
+    jobjectArray row = pEnv->NewObjectArray(array.size(), stringClass, 0);
     jsize i;
 
     for (i = 0; i < array.size(); ++i) {
-        env->SetObjectArrayElement(row, i, env->NewStringUTF(array[i].c_str()));
+        pEnv->SetObjectArrayElement(row, i, pEnv->NewStringUTF(array[i].c_str()));
     }
     return row;
 }
 
 jintArray JniHelper::makeIntArray(jsize count, int array[])
 {
-    JNIEnv *env = 0;
+    JNIEnv* pEnv = cocos2d::JniHelper::getEnv();
 
-    if (! getEnv(&env))
+    if (!pEnv)
     {
         return NULL;
     }
 
     jintArray result;
-    result = env->NewIntArray(count);
+    result = pEnv->NewIntArray(count);
     if (result == NULL) {
          return NULL; /* out of memory error thrown */
     }
@@ -329,23 +420,22 @@ jintArray JniHelper::makeIntArray(jsize count, int array[])
     }
 
      // move from the temp structure to the java structure
-    env->SetIntArrayRegion(result, 0, count, fill);
+    pEnv->SetIntArrayRegion(result, 0, count, fill);
     return result;
 }
 
 jbyteArray JniHelper::makeByteArray(std::string data)
 {
-    JNIEnv *env = 0;
+    JNIEnv* pEnv = cocos2d::JniHelper::getEnv();
 
-    if (! getEnv(&env))
-    {
+    if (!pEnv) {
         return NULL;
     }
 
     const int length = data.length();
 
-    jbyteArray array = env->NewByteArray(length);
-    env->SetByteArrayRegion (array, 0, length, reinterpret_cast<const signed char *>(data.c_str()));
+    jbyteArray array = pEnv->NewByteArray(length);
+    pEnv->SetByteArrayRegion(array, 0, length, reinterpret_cast<const signed char *>(data.c_str()));
 
     return array;
 }

@@ -27,6 +27,7 @@ THE SOFTWARE.
 
 #include "CCMenuItem.h"
 #include "layers_scenes_transitions_nodes/CCLayer.h"
+#include <vector>
 
 NS_CC_BEGIN
 
@@ -91,6 +92,8 @@ public:
      */
     static CCMenu* createWithArray(CCArray* pArrayOfItems);
 
+    static CCMenu* createWithArray(std::vector<CCMenuItem *> pArrayOfItems);
+
     /** creates a CCMenu with it's item, then use addChild() to add 
       * other items. It is used for script, it can't init with undetermined
       * number of variables.
@@ -111,6 +114,8 @@ public:
      * @lua NA
      */
     bool initWithArray(CCArray* pArrayOfItems);
+
+    bool initWithArray(std::vector<CCMenuItem *> pArrayOfItems);
 
     /** align items vertically */
     void alignItemsVertically();

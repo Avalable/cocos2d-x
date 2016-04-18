@@ -40,22 +40,48 @@ typedef struct JniMethodInfo_
 
 class CC_DLL JniHelper
 {
-public:
-    static JavaVM* getJavaVM();
-    static void setJavaVM(JavaVM *javaVM);
-    static jclass getClassID(const char *className, JNIEnv *env=0);
-    static bool getStaticMethodInfo(JniMethodInfo &methodinfo, const char *className, const char *methodName, const char *paramCode);
-    static bool getMethodInfo(JniMethodInfo &methodinfo, const char *className, const char *methodName, const char *paramCode);
-    static std::string jstring2string(jstring str);
-    static long getNativeHeapAllocatedSize();
-    static long getNativeHeapSize();
-    static jobjectArray makeStringArray(jsize count, std::string array[]);
-    static jobjectArray makeStringArray(const std::vector<std::string>& array);
-    static jintArray makeIntArray(jsize count, int array[]);
-    static jbyteArray makeByteArray(std::string data);
+    public:
+        static JavaVM *getJavaVM();
 
-private:
-    static JavaVM *m_psJavaVM;
+        static JNIEnv *getEnv();
+
+        static void setJavaVM(JavaVM *javaVM);
+
+        static jclass getClassID(const char *className, JNIEnv *env = 0);
+
+        static bool setClassLoaderFrom(jobject activityInstance);
+
+        static bool getStaticMethodInfo(JniMethodInfo &methodinfo, const char *className, const char *methodName, const char *paramCode);
+
+        static bool getMethodInfo(JniMethodInfo &methodinfo, const char *className, const char *methodName, const char *paramCode);
+
+        static std::string jstring2string(jstring str);
+
+        static long getNativeHeapAllocatedSize();
+
+        static long getNativeHeapSize();
+
+        static jobjectArray makeStringArray(jsize count, std::string array[]);
+
+        static jobjectArray makeStringArray(const std::vector<std::string> &array);
+
+        static jintArray makeIntArray(jsize count, int array[]);
+
+        static jbyteArray makeByteArray(std::string data);
+
+        static jmethodID loadclassMethod_methodID;
+
+        static jobject classloader;
+
+    private:
+        static bool getMethodInfo_DefaultClassLoader(JniMethodInfo &methodinfo,
+                const char *className,
+                const char *methodName,
+                const char *paramCode);
+
+        static JNIEnv *cacheEnv(JavaVM *jvm);
+
+        static JavaVM *m_psJavaVM;
 };
 
 NS_CC_END

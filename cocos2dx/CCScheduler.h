@@ -29,6 +29,10 @@ THE SOFTWARE.
 
 #include "cocoa/CCObject.h"
 #include "support/data_support/uthash.h"
+#include <functional>
+#include <vector>
+#include <mutex>
+
 
 NS_CC_BEGIN
 
@@ -282,6 +286,8 @@ public:
      */
     void resumeTargets(CCSet* targetsToResume);
 
+    void performFunctionInCocosThread(const std::function<void ()> &function);
+
 private:
     void removeHashElement(struct _hashSelectorEntry *pElement);
     void removeUpdateFromHash(struct _listEntry *entry);
@@ -290,6 +296,9 @@ private:
 
     void priorityIn(struct _listEntry **ppList, CCObject *pTarget, int nPriority, bool bPaused);
     void appendIn(struct _listEntry **ppList, CCObject *pTarget, bool bPaused);
+
+    std::vector<std::function<void()> > _functionsToPerform;
+    std::mutex _performMutex;
 
 protected:
     float m_fTimeScale;

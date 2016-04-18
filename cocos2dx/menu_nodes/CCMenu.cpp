@@ -91,6 +91,21 @@ CCMenu* CCMenu::createWithArray(CCArray* pArrayOfItems)
     return pRet;
 }
 
+CCMenu* CCMenu::createWithArray(std::vector<CCMenuItem *> pArrayOfItems)
+{
+    CCMenu *pRet = new CCMenu();
+    if (pRet && pRet->initWithArray(pArrayOfItems))
+    {
+        pRet->autorelease();
+    }
+    else
+    {
+        CC_SAFE_DELETE(pRet);
+    }
+
+    return pRet;
+}
+
 CCMenu* CCMenu::createWithItems(CCMenuItem* item, va_list args)
 {
     CCArray* pArray = NULL;
@@ -161,6 +176,50 @@ bool CCMenu::initWithArray(CCArray* pArrayOfItems)
         onWillReleased = NULL;
         onWillReleasedSender = NULL;
         
+        return true;
+    }
+    return false;
+}
+
+bool CCMenu::initWithArray(std::vector<CCMenuItem *> pArrayOfItems)
+{
+    if (CCLayer::init())
+    {
+        setTouchPriority(kCCMenuHandlerPriority);
+        setTouchMode(kCCTouchesOneByOne);
+        setTouchEnabled(true);
+
+        m_bEnabled = true;
+        // menu in the center of the screen
+        CCSize s = CCDirector::sharedDirector()->getWinSize();
+
+        this->ignoreAnchorPointForPosition(true);
+        setAnchorPoint(ccp(0.5f, 0.5f));
+        this->setContentSize(s);
+
+        setPosition(ccp(s.width/2, s.height/2));
+
+        int z=0;
+
+        for (auto & item : pArrayOfItems)
+        {
+            this->addChild(item, z);
+            z++;
+        }
+
+        //    [self alignItemsVertically];
+        m_pSelectedItem = NULL;
+        m_eState = kCCMenuStateWaiting;
+
+        // enable cascade color and opacity on menus
+        setCascadeColorEnabled(true);
+        setCascadeOpacityEnabled(true);
+
+        //@Plus Pingya
+        userData = NULL;
+        onWillReleased = NULL;
+        onWillReleasedSender = NULL;
+
         return true;
     }
     return false;

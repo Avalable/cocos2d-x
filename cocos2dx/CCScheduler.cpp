@@ -779,6 +779,15 @@ void CCScheduler::resumeTargets(CCSet* pTargetsToResume)
     }
 }
 
+void CCScheduler::performFunctionInCocosThread(const std::function<void ()> &function)
+{
+    _performMutex.lock();
+
+    _functionsToPerform.push_back(function);
+
+    _performMutex.unlock();
+}
+
 // main loop
 void CCScheduler::update(float dt)
 {
@@ -906,6 +915,19 @@ void CCScheduler::update(float dt)
     m_bUpdateHashLocked = false;
 
     m_pCurrentTarget = NULL;
+
+
+    if( !_functionsToPerform.empty())
+    {
+        _performMutex.lock();
+        // fixed #4123: Save the callback functions, they must be invoked after '_performMutex.unlock()', otherwise if new functions are added in callback, it will cause thread deadlock.
+        auto temp = _functionsToPerform;
+        _functionsToPerform.clear();
+        _performMutex.unlock();
+        for( const auto &function : temp ) {
+            function();
+        }
+    }
 }
 
 
