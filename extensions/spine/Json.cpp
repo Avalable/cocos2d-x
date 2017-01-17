@@ -114,6 +114,9 @@ namespace cocos2d { namespace extension
 #else
 n = (float)strtod( num, &endptr );
 #endif
+        
+        long l;
+        l = strtol(num, &endptr, 10);
         /* ignore errno's ERANGE, which returns +/-HUGE_VAL */
         /* n is 0 on any other error */
 
@@ -121,6 +124,7 @@ n = (float)strtod( num, &endptr );
             /* Parse success, number found. */
             item->valuefloat = n;
             item->valueint = (int)n;
+            item->valuelong = (long)l;
             item->type = Json_Number;
             return endptr;
         } else {
@@ -438,6 +442,12 @@ if (*value != '{') {
     {
         value = Json_getItem(value, name);
         return value ? value->valueint : defaultValue;
+    }
+    
+    long Json_getLong(Json *value, const char *name, long defaultValue)
+    {
+        value = Json_getItem(value, name);
+        return value ? value->valuelong : defaultValue;
     }
 
     bool Json_getBool(Json *value, const char *name, bool defaultValue)

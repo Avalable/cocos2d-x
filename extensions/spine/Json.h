@@ -57,6 +57,7 @@ namespace cocos2d { namespace extension {
 
         const char* valuestring; /* The item's string, if type==Json_String */
         int valueint; /* The item's number, if type==Json_Number */
+        long valuelong;
         float valuefloat; /* The item's number, if type==Json_Number */
 
         const char* name; /* The item's name string, if this item is the child of, or is in the list of subitems of an object. */
@@ -73,6 +74,7 @@ namespace cocos2d { namespace extension {
     const char* Json_getString (Json* json, const char* name, const char* defaultValue);
     float Json_getFloat (Json* json, const char* name, float defaultValue);
     int Json_getInt (Json* json, const char* name, int defaultValue);
+    long Json_getLong (Json* json, const char* name, long defaultValue);
     bool Json_getBool(Json *value, const char *name, bool defaultValue);
 
     /* Returns the number of items in an array (or object). */
