@@ -115,8 +115,10 @@ namespace cocos2d { namespace extension
 n = (float)strtod( num, &endptr );
 #endif
         
+        char * longEndptr;
         long l;
-        l = strtol(num, &endptr, 10);
+        l = strtol(num, &longEndptr, 10);
+        
         /* ignore errno's ERANGE, which returns +/-HUGE_VAL */
         /* n is 0 on any other error */
 
