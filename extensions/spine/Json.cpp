@@ -433,6 +433,39 @@ if (*value != '{') {
         if (object && object->valuestring) return object->valuestring;
         return defaultValue;
     }
+    
+    vector<string> Json_getStringArray(Json* json, const char* name){
+        vector<string> result;
+        Json_forEach(json, name, [&](Json* json){
+            result.push_back(json->valuestring);
+        });
+        
+        return result;
+    }
+    
+    vector<int> Json_getIntArray(Json* json, const char* name){
+        vector<int> result;
+        Json_forEach(json, name, [&](Json* json){
+            result.push_back(json->valueint);
+        });
+        
+        return result;
+    }
+    
+    void Json_forEach(Json* json, const char* name, function<void(Json*)> callback)
+    {
+        if (!callback)
+            return;
+        
+        Json* listJson = Json_getItem(json, name);
+        if (listJson && listJson->child)
+        {
+            Json* item = listJson->child;
+            do{
+                callback(item);
+            }while((item = item->next));
+        }
+    }
 
     float Json_getFloat(Json *value, const char *name, float defaultValue)
     {

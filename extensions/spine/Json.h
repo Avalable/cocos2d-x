@@ -22,12 +22,17 @@
 
 /* Esoteric Software: Removed everything except parsing, shorter method names, more get methods, double to float, formatted. */
 
+#include <stdio.h>
+#include <string>
+#include <vector>
+#include <functional>
 #include "JsonAllocator.h"
 
 #ifndef SPINE_JSON_H_
 #define SPINE_JSON_H_
 
 
+using namespace std;
 namespace cocos2d { namespace extension {
 
 /* Json Types: */
@@ -76,6 +81,9 @@ namespace cocos2d { namespace extension {
     int Json_getInt (Json* json, const char* name, int defaultValue);
     long Json_getLong (Json* json, const char* name, long defaultValue);
     bool Json_getBool(Json *value, const char *name, bool defaultValue);
+    void Json_forEach(Json* json, const char* name, function<void(Json*)> callback);
+    vector<string> Json_getStringArray(Json* json, const char* name);
+    vector<int> Json_getIntArray(Json* json, const char* name);
 
     /* Returns the number of items in an array (or object). */
     inline int Json_getSize (Json* json) { return json->size; }
