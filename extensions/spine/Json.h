@@ -81,7 +81,7 @@ namespace cocos2d { namespace extension {
     int Json_getInt (Json* json, const char* name, int defaultValue);
     long Json_getLong (Json* json, const char* name, long defaultValue);
     bool Json_getBool(Json *value, const char *name, bool defaultValue);
-    void Json_forEach(Json* json, const char* name, function<void(Json*)> callback);
+    bool Json_forEach(Json* json, const char* name, function<void(Json*)> callback);
     vector<string> Json_getStringArray(Json* json, const char* name);
     vector<int> Json_getIntArray(Json* json, const char* name);
 

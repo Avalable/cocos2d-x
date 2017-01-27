@@ -452,19 +452,24 @@ if (*value != '{') {
         return result;
     }
     
-    void Json_forEach(Json* json, const char* name, function<void(Json*)> callback)
+    bool Json_forEach(Json* json, const char* name, function<void(Json*)> callback)
     {
         if (!callback)
-            return;
+            return false;
         
         Json* listJson = Json_getItem(json, name);
-        if (listJson && listJson->child)
+        if (!listJson)
+            return false;
+        
+        if (listJson->child)
         {
             Json* item = listJson->child;
             do{
                 callback(item);
             }while((item = item->next));
         }
+        
+        return true;
     }
 
     float Json_getFloat(Json *value, const char *name, float defaultValue)
