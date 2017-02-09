@@ -430,26 +430,44 @@ if (*value != '{') {
     const char *Json_getString(Json *object, const char *name, const char *defaultValue)
     {
         object = Json_getItem(object, name);
-        if (object && object->valuestring) return object->valuestring;
-        return defaultValue;
+        if (object && object->valuestring)
+            return object->valuestring;
+        else
+            return defaultValue;
     }
     
     vector<string> Json_getStringArray(Json* json, const char* name){
         vector<string> result;
-        Json_forEach(json, name, [&](Json* json){
+        return Json_getStringArray(json, name, result);
+    }
+    
+    vector<string> Json_getStringArray(Json* json, const char* name, vector<string> defaultValue){
+        vector<string> result;
+        bool success = Json_forEach(json, name, [&](Json* json){
             result.push_back(json->valuestring);
         });
         
-        return result;
+        if (success)
+            return result;
+        else
+            return defaultValue;
     }
     
     vector<int> Json_getIntArray(Json* json, const char* name){
         vector<int> result;
-        Json_forEach(json, name, [&](Json* json){
+        return Json_getIntArray(json, name, result);
+    }
+    
+    vector<int> Json_getIntArray(Json* json, const char* name, vector<int> defaultValue){
+        vector<int> result;
+        bool success = Json_forEach(json, name, [&](Json* json){
             result.push_back(json->valueint);
         });
         
-        return result;
+        if (success)
+            return result;
+        else
+            return defaultValue;
     }
     
     bool Json_forEach(Json* json, const char* name, function<void(Json*)> callback)
