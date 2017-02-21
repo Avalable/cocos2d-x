@@ -476,6 +476,11 @@ if (*value != '{') {
             return false;
         
         Json* listJson = Json_getItem(json, name);
+        return Json_forEach(listJson, callback);
+    }
+    
+    bool Json_forEach(Json* listJson, function<void(Json*)> callback)
+    {
         if (!listJson)
             return false;
         
