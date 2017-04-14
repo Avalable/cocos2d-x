@@ -130,6 +130,8 @@ unsigned char* CCFileUtilsAndroid::doGetFileData(const char* pszFileName, const 
     
     string fullPath = fullPathForFilename(pszFileName);
     
+    
+    
     if (fullPath[0] != '/')
     {
         if (forAsync)
@@ -155,7 +157,7 @@ unsigned char* CCFileUtilsAndroid::doGetFileData(const char* pszFileName, const 
             size = ftell(fp);
             fseek(fp,0,SEEK_SET);
             pData = new unsigned char[size];
-            size = fread(pData,sizeof(unsigned char), size,fp);
+            size = fread((void*)pData,sizeof(unsigned char), size,fp);
             fclose(fp);
             
             if (pSize)
@@ -169,7 +171,7 @@ unsigned char* CCFileUtilsAndroid::doGetFileData(const char* pszFileName, const 
     {
         std::string msg = "Get data from file(";
         msg.append(pszFileName).append(") failed!");
-        CCLOG("%s", msg.c_str());
+        CCLOG(".....%s", msg.c_str());
     }
     
     return pData;
