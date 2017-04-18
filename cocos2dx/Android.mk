@@ -157,12 +157,10 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH) \
                     #$(LOCAL_PATH)/../external/freetype2/include/android/freetype2
 
 LOCAL_LDLIBS := -lGLESv2 \
-                -llog \
-                -lz
+                -llog
 
 LOCAL_EXPORT_LDLIBS := -lGLESv2 \
-                       -llog \
-                       -lz
+                       -llog
 
 LOCAL_WHOLE_STATIC_LIBRARIES := cocos_libpng_static
 LOCAL_WHOLE_STATIC_LIBRARIES += cocos_jpeg_static
@@ -170,6 +168,7 @@ LOCAL_WHOLE_STATIC_LIBRARIES += cocos_libxml2_static
 LOCAL_WHOLE_STATIC_LIBRARIES += cocos_libtiff_static
 LOCAL_WHOLE_STATIC_LIBRARIES += cocos_libwebp_static
 LOCAL_WHOLE_STATIC_LIBRARIES += cocos_freetype2_static
+LOCAL_WHOLE_STATIC_LIBRARIES += cocos_zlib_static
 
 # define the macro to compile through support/zip_support/ioapi.c
 LOCAL_CFLAGS := -Wno-psabi -DUSE_FILE32API
@@ -183,3 +182,4 @@ $(call import-module,libpng)
 $(call import-module,libtiff)
 $(call import-module,libwebp)
 $(call import-module, freetype2)
+$(call import-module,zlib)
