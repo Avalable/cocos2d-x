@@ -540,6 +540,7 @@ CCNode * CCNode::create(void)
     {
         CC_SAFE_DELETE(pRet);
     }
+    
 	return pRet;
 }
 
