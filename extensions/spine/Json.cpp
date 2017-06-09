@@ -498,18 +498,33 @@ if (*value != '{') {
     float Json_getFloat(Json *value, const char *name, float defaultValue)
     {
         value = Json_getItem(value, name);
+        
+        string numStr = (value && value->valuestring && value->valuefloat == 0) ? value->valuestring : "";
+        if (numStr.size() > 0)
+            parse_number(value, numStr.c_str());
+        
         return value ? value->valuefloat : defaultValue;
     }
 
     int Json_getInt(Json *value, const char *name, int defaultValue)
     {
         value = Json_getItem(value, name);
+        
+        string numStr = (value && value->valuestring && value->valueint == 0) ? value->valuestring : "";
+        if (numStr.size() > 0)
+            parse_number(value, numStr.c_str());
+        
         return value ? value->valueint : defaultValue;
     }
     
     long Json_getLong(Json *value, const char *name, long defaultValue)
     {
         value = Json_getItem(value, name);
+        
+        string numStr = (value && value->valuestring && value->valuelong == 0) ? value->valuestring : "";
+        if (numStr.size() > 0)
+            parse_number(value, numStr.c_str());
+        
         return value ? value->valuelong : defaultValue;
     }
 
