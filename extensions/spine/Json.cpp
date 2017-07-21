@@ -470,6 +470,23 @@ if (*value != '{') {
             return defaultValue;
     }
     
+    vector<long> Json_getLongArray(Json* json, const char* name){
+        vector<long> result;
+        return Json_getLongArray(json, name, result);
+    }
+    
+    vector<long> Json_getLongArray(Json* json, const char* name, vector<long> defaultValue){
+        vector<long> result;
+        bool success = Json_forEach(json, name, [&](Json* json){
+            result.push_back(json->valuelong);
+        });
+        
+        if (success)
+            return result;
+        else
+            return defaultValue;
+    }
+    
     bool Json_forEach(Json* json, const char* name, function<void(Json*)> callback)
     {
         if (!callback)
