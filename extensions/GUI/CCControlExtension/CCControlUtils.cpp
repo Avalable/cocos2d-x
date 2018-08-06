@@ -93,7 +93,7 @@ RGBA CCControlUtils::RGBfromHSV(HSV value)
     
     if (value.s <= 0.0) // < is bogus, just shuts up warnings
     {       
-        if (isnan(value.h)) // value.h == NAN
+        if (std::isnan(value.h)) // value.h == NAN
         {   
             out.r = value.v;
             out.g = value.v;
